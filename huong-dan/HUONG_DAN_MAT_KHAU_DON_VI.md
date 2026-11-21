@@ -5,6 +5,7 @@
 |---|---|---|
 | **Mật khẩu xem** (đang dùng) | Lãnh đạo | Toàn bộ: 6 phần số liệu, sơ đồ, xếp hạng mọi đơn vị, mọi văn bản đến, lịch họp (phân công), truyền thông (chỉ đạo), nhật ký |
 | **Mật khẩu đơn vị** (mới, 21 mật khẩu) | Từng phòng, Thuế cơ sở | Kết quả, thứ hạng **của đơn vị mình** theo từng nhiệm vụ; văn bản đến đơn vị **chủ trì hoặc phối hợp**; lịch họp, chỉ đạo liên quan đơn vị (chỉ xem); bản tin truyền thông (**không** có nút Chỉ đạo) |
+| (thêm) Trung tâm điều hành thu NSNN | Thuế cơ sở: chỉ các xã, phường mình phụ trách · Phòng CNTK, Phòng NVDTPC: toàn bộ 99 xã, phường · các phòng khác: không có | Mở từ nút 🗺 trên trang chủ của đơn vị |
 | **Mật khẩu quản trị** (đang dùng) | Người cập nhật | Nhập số liệu, Cài đặt, Xuất file |
 
 Dữ liệu của mỗi đơn vị được **khóa riêng** bằng khóa của đơn vị đó: đơn vị này không mở được dữ liệu của đơn vị khác, kể cả khi cố tình. Đơn vị không thấy số liệu của đơn vị khác, chỉ thấy thứ hạng của mình (ví dụ "#3/14").
@@ -34,7 +35,7 @@ Danh sách 21 đơn vị: Văn phòng; Phòng QLDN số 1, 2, 3; Phòng CNTK; Ph
 
 ## Bước 4. Đưa kết quả, thứ hạng cho các đơn vị (mỗi lần cập nhật số liệu)
 - Sau khi nhập số liệu và **☁ Xuất file cho Google Drive** như thường lệ, bấm thêm **⬇ Xuất → 👥 Xuất kết quả cho các đơn vị (Drive)** → lưu **Ket_qua_don_vi.json** vào **cùng thư mục Drive** (thay bản cũ).
-- File này gồm 21 phần, mỗi phần khóa bằng khóa của một đơn vị. App của lãnh đạo tự bỏ qua file này.
+- File này gồm 21 phần, mỗi phần khóa bằng khóa của một đơn vị (kể cả dự toán xã, phường cho Trung tâm điều hành). App của lãnh đạo tự bỏ qua file này.
 
 ## Bước 5. Kiểm tra
 1. Mở link app trên máy khác (hoặc cửa sổ ẩn danh) → nhập **mật khẩu của một Thuế cơ sở**.

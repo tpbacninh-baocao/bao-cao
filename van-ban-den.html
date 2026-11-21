@@ -1117,7 +1117,8 @@ function ve(){
 }
 function veDau(){
   const cu=DATA.cap_nhat_luc?(Date.now()-new Date(DATA.cap_nhat_luc).getTime())/3600000:null; const e=$('#capnhat');
-  const ql=linkQuanTri();
+  const ql=DV?'':linkQuanTri();
+  if(DV){ e.innerHTML='Cập nhật lúc <b>'+esc(gioVN(DATA.cap_nhat_luc)||'(không rõ)')+'</b>'; e.className='capnhat'; return; }
   e.innerHTML='Quét lúc <b>'+esc(gioVN(DATA.cap_nhat_luc)||'(không rõ)')+'</b>'+(DONG_BO?' · về app lúc '+esc(gioVN(DONG_BO).slice(0,5))+' '+esc(gioVN(DONG_BO).slice(-10,-5)):'')+(cu!==null&&cu>30?' – đã hơn '+Math.floor(cu)+' giờ, có thể chưa mới':'')+
     ' · <span class="song"><i></i>tự kiểm tra 2 phút/lần'+(lanKT?' (lần cuối '+new Intl.DateTimeFormat('vi-VN',{timeZone:'Asia/Ho_Chi_Minh',hour:'2-digit',minute:'2-digit'}).format(new Date(lanKT))+')':'')+'</span>'+
     (ql?' · <a href="'+esc(ql)+'" target="_blank" rel="noopener noreferrer" title="Dành cho quản trị: mở GitHub, bấm Run workflow để lấy văn bản ngay">⚙ Lấy ngay (quản trị)</a>':'');
@@ -1223,6 +1224,7 @@ async function tai(nen,bao){
   let o, raw;
   try{ const r=await fetch((DV?'don-vi/'+encodeURIComponent(DV.ma)+'.vbd.json':TEP)+'?t='+Date.now(),{cache:'no-store'});
     if(nen&&!r.ok){ if(bao) thongBao('Chưa lấy được dữ liệu (mã lỗi '+r.status+'). Thử lại sau.'); return; }
+    if(r.status===404&&DV) return hienLoi('Chưa có văn bản đến của đơn vị – liên hệ Văn phòng.');
     if(r.status===404) return hienLoi('Chưa có dữ liệu văn bản đến. Tác vụ lấy dữ liệu chưa chạy lần nào – nhờ quản trị chạy “Lấy văn bản đến” trong mục Actions của kho.');
     if(!r.ok) return hienLoi('Không tải được dữ liệu (mã lỗi '+r.status+'). Hãy thử lại sau.');
     raw=await r.text(); o=JSON.parse(raw); DONG_BO=r.headers.get('last-modified')||DONG_BO;
@@ -1242,7 +1244,7 @@ async function thuDonVi(mk,nho){
   const ph=$('.hero .ph'); if(ph) ph.innerHTML='Văn bản đơn vị chủ trì, phối hợp · <b>'+esc(v.ten||v.ma)+'</b>';
   document.body.classList.add('che-dv');
   try{ const r=await fetch('don-vi/'+encodeURIComponent(v.ma)+'.vbd.json?t='+Date.now(),{cache:'no-store'});
-    if(!r.ok){ hienLoi(r.status===404?'Chưa có văn bản đến của '+(v.ten||v.ma)+'. Quản trị cần đặt mã gốc đơn vị (secret MA_GOC_DON_VI) rồi chạy “Lấy văn bản đến”.':'Không tải được dữ liệu (mã lỗi '+r.status+').'); return true; }
+    if(!r.ok){ hienLoi(r.status===404?'Chưa có văn bản đến của '+(v.ten||v.ma)+' – liên hệ Văn phòng.':'Không tải được dữ liệu. Thử lại sau.'); return true; }
     const raw=await r.text(); napDuLieu(await VBDC.giaiMaKhoa(JSON.parse(raw),v.khoa),mk,nho,raw); return true; }
   catch(e){ hienLoi('Không mở được văn bản đến của đơn vị.'); return true; }
 }
