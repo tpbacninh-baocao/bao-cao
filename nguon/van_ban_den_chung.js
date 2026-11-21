@@ -47,15 +47,59 @@ function maDV(s){
   const n=norm(s).replace(/[\s,.\-_()]/g,''); let m;
   if(!n) return null;
   if((m=n.match(/qldn0?(\d)/))||(m=n.match(/doanhnghiepso0?(\d)/))||(m=n.match(/qlhtdn(?:so)?0?(\d)/))) return ['1','2','3'].includes(m[1])?'QLDN'+m[1]:null;
-  if((m=n.match(/^(?:thue)?(?:tcs|coso)0?(\d+)/))||(m=n.match(/thuecoso0?(\d+)/))||(m=n.match(/tcs0?(\d+)/))) return +m[1]>=1&&+m[1]<=10?'TCS'+(+m[1]):null;
-  if((m=n.match(/kiemtra(?:so)?0?(\d)/))||(m=n.match(/^(?:phong)?kt0?(\d)$/))||(m=n.match(/ktra(?:so)?0?(\d)/))) return ['1','2'].includes(m[1])?'KT'+m[1]:null;
+  if((m=n.match(/^(?:thue)?(?:tcs|coso)0?(\d+)/))||(m=n.match(/thuecoso0?(\d+)/))||(m=n.match(/tcs0?(\d+)/))||(m=n.match(/^(?:thue)?cs0?(\d+)$/))) return +m[1]>=1&&+m[1]<=10?'TCS'+(+m[1]):null;
+  if((m=n.match(/kiemtra(?:so)?0?(\d)/))||(m=n.match(/^(?:phong)?kt0?(\d)$/))||(m=n.match(/ktra?(?:so)?0?(\d)/))) return ['1','2'].includes(m[1])?'KT'+m[1]:null;
   if(/cntk|canhankinhdoanh|hokinhdoanh/.test(n)) return 'CNTK';
+  if(/tccb|tochuccanbo/.test(n)) return 'TCCB';
+  if(/nvdtpc|nghiepvudutoan|dutoanphapche|phapche/.test(n)) return 'NVDTPC';
+  if(/qlrr|quanlyruiro/.test(n)) return 'QLRR';
+  if(/dlrr|dulieu/.test(n)) return 'DLRR';
+  if(/^(?:phong)?vanphong|^vp$/.test(n)) return 'VP';
   return null;
 }
 const khoaDV=s=>maDV(s)||(s&&String(s).trim()?'X:'+norm(s):'X:chua-phan');
 const TEN_DV={QLDN1:'Phòng Quản lý, hỗ trợ doanh nghiệp số 1',QLDN2:'Phòng Quản lý, hỗ trợ doanh nghiệp số 2',QLDN3:'Phòng Quản lý, hỗ trợ doanh nghiệp số 3',
   CNTK:'Phòng CNTK',KT1:'Phòng Kiểm tra 1',KT2:'Phòng Kiểm tra 2'};
+Object.assign(TEN_DV,{VP:'Văn phòng',TCCB:'Phòng Tổ chức cán bộ',NVDTPC:'Phòng Nghiệp vụ – Dự toán – Pháp chế',QLRR:'Phòng Quản lý rủi ro',DLRR:'Phòng Dữ liệu và rủi ro'});
 for(let i=1;i<=10;i++) TEN_DV['TCS'+i]='Thuế cơ sở '+i+' thành phố Bắc Ninh';
+/* ---------- Đơn vị được cấp mật khẩu riêng (giữ khớp với cong-cu/don-vi.mjs – tệp đó đọc chính thư viện này) ---------- */
+const DS_PHONG=['VP','QLDN1','QLDN2','QLDN3','CNTK','KT1','KT2','TCCB','NVDTPC','QLRR','DLRR'];
+const DS_DON_VI=[...DS_PHONG,...Array.from({length:10},(_,i)=>'TCS'+(i+1))];
+/* Đơn vị nêu trong một chuỗi (đơn vị chủ trì, phối hợp, thành phần): hiểu cả “các phòng”, “các Thuế cơ sở”, “các đơn vị” */
+function dvLienQuan(s){
+  const out=new Set(); const t=norm(s); if(!t) return out;
+  if(/(cac|tat ca cac|toan bo cac) don vi|toan the/.test(t)){ DS_DON_VI.forEach(x=>out.add(x)); return out; }
+  if(/(cac|tat ca cac|toan bo cac) phong/.test(t)) DS_PHONG.forEach(x=>out.add(x));
+  if(/(cac|tat ca cac)? ?thue co so(?! ?\d)|cac tcs\b|cac co so/.test(t)) DS_DON_VI.filter(x=>/^TCS/.test(x)).forEach(x=>out.add(x));
+  String(s).split(/[;,\n+]|\s+và\s+/).forEach(p=>{ const m=maDV(p); if(m) out.add(m); });
+  return out;
+}
+/* ---------- Khóa riêng của đơn vị ----------
+   khoa_don_vi.json: {lap, salt, ds:[{iv,du}]} – mỗi mục là thông tin một đơn vị (mã, tên, khóa dữ liệu…) khóa bằng mật khẩu đơn vị đó.
+   Dữ liệu của đơn vị (don-vi/<MÃ>.*.json) khóa bằng khóa riêng (AES-GCM 256, khóa ngẫu nhiên suy từ “mã gốc” của quản trị). */
+const b64d=t=>{ const b=atob(t), u=new Uint8Array(b.length); for(let i=0;i<b.length;i++) u[i]=b.charCodeAt(i); return u; };
+const b64e=buf=>{ const u=new Uint8Array(buf); let x=''; for(let i=0;i<u.length;i+=0x8000) x+=String.fromCharCode.apply(null,u.subarray(i,i+0x8000)); return btoa(x); };
+let KHOA_DV_TEP=null;
+async function moKhoaDonVi(mk){
+  if(!mk||!(window.crypto&&crypto.subtle)) return null;
+  if(!KHOA_DV_TEP){ try{ const r=await fetch('khoa_don_vi.json?t='+Date.now(),{cache:'no-store'}); KHOA_DV_TEP=r.ok?await r.json():false; }catch(e){ return null; } }
+  const o=KHOA_DV_TEP; if(!o||!Array.isArray(o.ds)) return null;
+  const g=await crypto.subtle.importKey('raw',new TextEncoder().encode(mk),'PBKDF2',false,['deriveKey']);
+  const k=await crypto.subtle.deriveKey({name:'PBKDF2',salt:b64d(o.salt),iterations:o.lap||250000,hash:'SHA-256'},g,{name:'AES-GCM',length:256},false,['decrypt']);
+  for(const e of o.ds){ try{ const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:b64d(e.iv)},k,b64d(e.du)); const v=JSON.parse(new TextDecoder().decode(pt)); if(v&&v.ma&&v.khoa) return v; }catch(x){} }
+  return null;
+}
+const coTepKhoaDV=async()=>{ if(KHOA_DV_TEP===null){ try{ const r=await fetch('khoa_don_vi.json?t='+Date.now(),{cache:'no-store'}); KHOA_DV_TEP=r.ok?await r.json():false; }catch(e){ return null; } } return !!(KHOA_DV_TEP&&KHOA_DV_TEP.ds); };
+async function giaiMaKhoa(o,khoaB64){
+  const k=await crypto.subtle.importKey('raw',b64d(khoaB64),{name:'AES-GCM'},false,['decrypt']);
+  const pt=await crypto.subtle.decrypt({name:'AES-GCM',iv:b64d(o.iv)},k,b64d(o.du)); return JSON.parse(new TextDecoder().decode(pt));
+}
+async function maHoaKhoa(obj,khoaB64){
+  const k=await crypto.subtle.importKey('raw',b64d(khoaB64),{name:'AES-GCM'},false,['encrypt']); const iv=crypto.getRandomValues(new Uint8Array(12));
+  const ct=await crypto.subtle.encrypt({name:'AES-GCM',iv},k,new TextEncoder().encode(JSON.stringify(obj))); return {maHoa:'AES-GCM',khoa:'don-vi',iv:b64e(iv),du:b64e(ct)};
+}
+/* Khóa dữ liệu của đơn vị = HMAC-SHA256(mã gốc, "bao-cao-don-vi|<MÃ>") – trùng cách tính của cong-cu/don-vi.mjs */
+async function khoaTuGoc(gocB64,ma){ const k=await crypto.subtle.importKey('raw',b64d(gocB64),{name:'HMAC',hash:'SHA-256'},false,['sign']); return b64e(await crypto.subtle.sign('HMAC',k,new TextEncoder().encode('bao-cao-don-vi|'+ma))); }
 
 /* ---------- chuẩn bị dữ liệu (cùng cách tính với trang Văn bản đến) ---------- */
 const laKhan=v=>/khẩn|hỏa tốc/i.test(v.do_khan||'');
@@ -316,6 +360,6 @@ function taiCSV(tieu,rows){ const o=x=>'"'+String(x==null?'':x).replace(/"/g,'""
 async function saoChep(t){ try{ await navigator.clipboard.writeText(t); return true; }catch(e){ const a=document.createElement('textarea'); a.value=t; a.style.cssText='position:fixed;left:-9999px'; document.body.appendChild(a); a.select(); let ok=false; try{ ok=document.execCommand('copy'); }catch(_){} a.remove(); return ok; } }
 
 g.VBDC={phienBan:1, esc, boDau, norm, homNay, dmy, dm, soNgay, congNgay, thu, THU, THU_N, ngayLam, luiNgayLam, dauTuan, cuoiTuan, kyBaoCao,
-  maDV, khoaDV, tenKhoa, TEN_DV, chuanBi, dsViec, dsHop, ttHan, goiY, ngayBatDau, lichViec, thongKeDV, nhanDinh, soKH, laKhanCao,
+  maDV, khoaDV, tenKhoa, TEN_DV, DS_PHONG, DS_DON_VI, dvLienQuan, moKhoaDonVi, coTepKhoaDV, giaiMaKhoa, maHoaKhoa, khoaTuGoc, b64e, b64d, chuanBi, dsViec, dsHop, ttHan, goiY, ngayBatDau, lichViec, thongKeDV, nhanDinh, soKH, laKhanCao,
   LOAI_BC, baoCao, trangIn, inTrang, taiWord, taiCSV, taiTep, tenTep, saoChep};
 })(window);

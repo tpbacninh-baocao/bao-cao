@@ -8,11 +8,14 @@
  *  2. Cài đặt dự án (bánh răng) → Thuộc tính tập lệnh → Thêm: MA_BI_MAT = một chuỗi ngẫu nhiên dài ≥ 20 ký tự.
  *  3. Triển khai → Tùy chọn triển khai mới → Loại: Ứng dụng web → Thực thi với tư cách: Tôi;
  *     Người có quyền truy cập: Bất kỳ ai → Triển khai → cho phép quyền → sao chép URL (kết thúc bằng /exec).
+ *  2b. (Mật khẩu đơn vị, nhật ký) Thêm thuộc tính MA_NHAT_KY = chuỗi ngẫu nhiên ≥ 20 ký tự (tạo trong app ⚙ Cài đặt → Mật khẩu đơn vị).
+ *      Mã này CHỈ cho phép ghi nhật ký đăng nhập, sử dụng (trang NhatKy) – các đơn vị dùng, không ghi/đọc được gì khác.
  *  4. Trong app: ⚙ Cài đặt → Đồng bộ Google Sheet → dán URL và MA_BI_MAT → Thử kết nối → Tạo file cau_hinh.json.
  * Cột có danh sách thả xuống (VD Lãnh đạo chủ trì, Phòng chủ trì): tự chọn mục khớp; bản đầy đủ ghi ở cột “… (app)”.
  * Mã bí mật chỉ nằm trong cau_hinh.json đã khóa bằng mật khẩu xem – người không có mật khẩu xem không gọi được.
  */
-const TRANG = { LD: 'LĐ', HOP: 'LichHop', CD: 'Chidao' };
+const TRANG = { LD: 'LĐ', HOP: 'LichHop', CD: 'Chidao', NK: 'NhatKy' };
+const COT_NK = ['Thời gian', 'Vai trò', 'Đơn vị', 'Hành động', 'Chi tiết', 'Thiết bị', 'Trình duyệt', 'Phiên'];
 const TZ = 'Asia/Ho_Chi_Minh';
 
 function doGet() { return traVe({ ok: false, loi: 'Hãy gọi bằng app Báo cáo điều hành.' }); }
@@ -20,10 +23,14 @@ function doGet() { return traVe({ ok: false, loi: 'Hãy gọi bằng app Báo c�
 function doPost(e) {
   let yc;
   try { yc = JSON.parse(e.postData.contents); } catch (x) { return traVe({ ok: false, loi: 'Yêu cầu không đúng khuôn dạng.' }); }
-  const ma = PropertiesService.getScriptProperties().getProperty('MA_BI_MAT') || '';
+  const tt = PropertiesService.getScriptProperties();
+  const ma = tt.getProperty('MA_BI_MAT') || '', maNK = tt.getProperty('MA_NHAT_KY') || '';
   if (ma.length < 20) return traVe({ ok: false, loi: 'Apps Script chưa đặt MA_BI_MAT (ít nhất 20 ký tự) trong Thuộc tính tập lệnh.' });
-  if (!yc || yc.ma !== ma) { Utilities.sleep(800); return traVe({ ok: false, loi: 'Sai mã bí mật đồng bộ.' }); }
+  const laQT = !!yc && yc.ma === ma, laNK = !!yc && maNK.length >= 20 && yc.ma === maNK;
+  if (!laQT && !(laNK && yc.loai === 'nhatky')) { Utilities.sleep(800); return traVe({ ok: false, loi: 'Sai mã bí mật đồng bộ.' }); }
   try {
+    if (yc.loai === 'nhatky') return traVe(ghiNhatKy(yc.du));
+    if (yc.loai === 'doc_nhatky') return traVe(docNhatKy());
     if (yc.loai === 'doc') return traVe(docTatCa());
     const khoa = LockService.getDocumentLock(); khoa.waitLock(20000);
     try {
@@ -117,4 +124,28 @@ function ghiChiDao(d, nguoi) {
   dat('stt', d.stt); dat('Lãnh đạo chỉ đạo', d.lanh_dao); dat('Văn bản\\bài báo gốc', d.goc); dat('Nội dung chỉ đạo', d.noi_dung); dat('Đơn vị chủ trì', d.chu_tri);
   dat('Đơn vị phối hợp', d.phoi_hop); dat('Hạn thực hiện', d.han); dat('Link đính kèm', d.link); dat('Thời gian giao', d.thoi_gian); dat('Phụ trách', d.phu_trach || nguoi);
   return { ok: true, hang: hang, canh_bao: canhBao };
+}
+
+/* ---------- Nhật ký đăng nhập, sử dụng (trang NhatKy) ---------- */
+function trangNK() {
+  const ss = SpreadsheetApp.getActive(); let s = ss.getSheetByName(TRANG.NK);
+  if (!s) { s = ss.insertSheet(TRANG.NK); s.getRange(1, 1, 1, COT_NK.length).setValues([COT_NK]).setFontWeight('bold'); s.setFrozenRows(1); }
+  return s;
+}
+function ghiNhatKy(ds) {
+  if (!Array.isArray(ds) || !ds.length) return { ok: true, ghi: 0 };
+  const bo = CacheService.getScriptCache(), k = 'nk-' + Math.floor(Date.now() / 60000), dem = +(bo.get(k) || 0);
+  if (dem > 600) return { ok: false, loi: 'Quá nhiều nhật ký trong 1 phút.' };
+  ds = ds.slice(0, 50); bo.put(k, String(dem + ds.length), 120);
+  const hang = ds.map(o => { o = o || {}; const t = new Date(o.luc || Date.now());
+    return [isNaN(t) ? new Date() : t, o.vai, o.dv, o.hd, o.ct, o.tb, o.td, o.ph].map((v, i) => i === 0 ? v : an(String(v == null ? '' : v).slice(0, 300))); });
+  const khoa = LockService.getDocumentLock(); khoa.waitLock(20000);
+  try { const s = trangNK(); s.getRange(s.getLastRow() + 1, 1, hang.length, COT_NK.length).setValues(hang); s.getRange(2, 1, s.getLastRow() - 1, 1).setNumberFormat('dd/MM/yyyy HH:mm:ss'); }
+  finally { khoa.releaseLock(); }
+  return { ok: true, ghi: hang.length };
+}
+function docNhatKy() {
+  const s = trangNK(); const n = s.getLastRow(); if (n < 2) return { ok: true, nhat_ky: [] };
+  const tu = Math.max(2, n - 4999); const v = s.getRange(tu, 1, n - tu + 1, COT_NK.length).getValues();
+  return { ok: true, nhat_ky: v.map(r => ({ luc: r[0] instanceof Date ? r[0].toISOString() : String(r[0]), vai: r[1], dv: r[2], hd: r[3], ct: r[4], tb: r[5], td: r[6], ph: r[7] })) };
 }

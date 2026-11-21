@@ -843,6 +843,24 @@ body.lh-mo{overflow:hidden}
 .cd-f .lh-f{margin-bottom:10px}
 @media (max-width:720px){.tt-loc select{flex:1 1 45%}.tin-ds.luoi{grid-template-columns:1fr}}
 @media (max-width:420px){.topbar .tb-group{gap:5px}.topbar .btn.icon{width:31px;min-width:31px;padding-left:0;padding-right:0}}
+
+/* ================= CHẾ ĐỘ ĐƠN VỊ (mật khẩu đơn vị) ================= */
+body.che-dv .part-btn[data-phan="ns"],body.che-dv .part-btn[data-phan="cd"],body.che-dv .part-btn[data-phan="hl"],body.che-dv .part-btn[data-phan="ktn"],body.che-dv .part-btn[data-phan="ktc"],body.che-dv .part-btn[data-phan="no"]{display:none!important}
+body.che-dv #btnImport,body.che-dv #btnSettings,body.che-dv .tb-group.tg-ngay,body.che-dv #fabPhan,body.che-dv #sampleBanner{display:none!important}
+body.che-dv #menuExport button:not([data-act="pdf"]):not([data-act="print"]),body.che-dv #menuExport hr{display:none!important}
+body.che-dv [data-cdmo],body.che-dv .cd-f,body.che-dv [data-dvlui],body.che-dv .dvct-dau .chon,body.che-dv .cpc,body.che-dv .lh-so .do,body.che-dv .lh-o i.chua{display:none!important}
+.vai-dv{display:inline-block;margin-top:3px;font-size:12px;font-weight:700;border-radius:999px;padding:1px 10px;background:#ecfeff;color:#0e7490;border:1px solid #67e8f9}
+[data-theme="dark"] .vai-dv{background:#0f3340;color:#67e8f9}
+.dvh-than{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(280px,100%),1fr));gap:12px;padding:18px 22px 22px}
+.dvh-the{display:flex;flex-direction:column;gap:6px;text-align:left;border:1px solid rgba(56,189,248,.4);border-radius:16px;padding:12px 14px;background:linear-gradient(165deg,rgba(14,58,120,.7),rgba(3,17,45,.85));color:#e6f3ff;font:inherit;cursor:pointer;text-decoration:none;min-width:0}
+.dvh-the:hover{border-color:#7dd3fc;box-shadow:0 0 24px rgba(56,189,248,.3)}
+.dvh-the .t{font-weight:800;font-size:14px;color:#7dd3fc}.dvh-the .t small{font-weight:600;color:#a9c7e8;margin-left:4px}
+.dvh-the .ct{display:flex;gap:6px;align-items:baseline;font-size:12.5px;color:#cfe3fa;border-top:1px dashed rgba(125,211,252,.2);padding-top:4px}
+.dvh-the .ct em{font-style:normal;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.dvh-the .ct b{font-size:15px;font-variant-numeric:tabular-nums}.dvh-the .ct u{text-decoration:none;color:#7dd3fc;font-weight:700;font-size:12px;white-space:nowrap}
+.dvh-xh{flex-direction:row;align-items:center;gap:14px;cursor:default}.dvh-xh .vong-d{width:96px;height:96px;flex:none}
+.dvh-xh div{display:flex;flex-direction:column;line-height:1.2}.dvh-xh .l{font-size:12px;color:#a9c7e8;margin-top:4px}.dvh-xh b{font-size:24px;color:#fff}.dvh-xh small{color:#a9c7e8}
+.dvh-xh p{margin:0;color:#cfe3fa}
 </style>
 </head>
 <body>
@@ -888,6 +906,8 @@ body.lh-mo{overflow:hidden}
           <button data-act="print">🖨 In trang này</button>
           <hr>
           <button data-act="drive">☁ Xuất file cho Google Drive</button>
+          <button data-act="dvkq">👥 Xuất kết quả cho các đơn vị (Drive)</button>
+          <button data-act="nhatky">📜 Nhật ký đăng nhập, sử dụng</button>
           <button data-act="online" id="mnOnline" class="hidden">🌐 Xem số liệu trực tuyến (Drive)</button>
           <hr>
           <button data-act="backup">💾 Sao lưu dữ liệu (.json)</button>
@@ -2941,6 +2961,7 @@ function tomTatVBD(d){   // cùng cách tính hạn với trang Văn bản đế
   return {tong:d.tong_so||(d.van_ban||[]).length, quaHan, sap, khan, homNay:homNayN, capNhat:d.cap_nhat_luc||null};
 }
 async function taiVBD(){
+  if(laDV()) return taiVBDDonVi();
   if(!CO_VBD||VBD.dang) return; const ds=[TT.mkXem, ssDoc(XEM_SS), docLS(XEM_KEY), BM().mkXem].filter(Boolean); const mkThu=ds.join('\u0001');
   if(VBD.dl&&Date.now()-VBD.luc<5*60000) return; if(!VBD.dl&&mkThu===VBD.mkThu&&Date.now()-VBD.luc<5*60000) return;
   VBD.dang=true; VBD.luc=Date.now(); VBD.mkThu=mkThu;
@@ -3277,6 +3298,7 @@ function khoiSVG(c){ return `<svg viewBox="0 0 40 40" aria-hidden="true"><polygo
 /* ---------- Vẽ ---------- */
 let TH_DV=null;
 function renderDV(){
+  if(laDV()) return renderDVDonVi();
   if(CO_VBD&&!VBD.full){ setTimeout(()=>{ taiVBD(true); },0); }
   TH_DV=tongHopDV(); const el=$('#p-dv'); const ui=D().ui;
   if(ui.dvChon&&TH_DV.dv[ui.dvChon]){ el.innerHTML=veChiTietDV(TH_DV, ui.dvChon); veBieuDoDV(TH_DV, ui.dvChon); thuGon(el); return; }
@@ -3375,10 +3397,10 @@ function veChiTietDV(T,id){
   h+=`<div class="mod-luoi">${mods.map(n=>{ const m=o.mod[n.ma]; return theMau(n.mau,
     the({id:'k-dv-m-'+n.ma, cls:'mod', tieu:`${n.icon} ${esc(n.tenDay)}`, phu:`<span class="xhm">Hạng ${m.hang}/${m.n} · ${fmtNum(m.diem,0)} điểm</span> ${n.ngay?'Số liệu đến '+fmtDate(n.ngay):''}`, tools:n.phan?`<button class="btn sm" data-go="${n.phan}">Mở ›</button>`:'',
       body:m.ct.map(c=>{ const x=c.gt[id];
-        const dai=c.thuTu.map(k=>`<i class="${k===id?'on':''}" title="${esc(tenNganDV(k))}: ${fmtKQ(c.dd,c.gt[k].v)} (hạng ${c.gt[k].hang})"></i>`).join('');
+        const dai=c.thuTu.map(k=>c.gt[k]?`<i class="${k===id?'on':''}" title="${esc(tenNganDV(k))}: ${fmtKQ(c.dd,c.gt[k].v)} (hạng ${c.gt[k].hang})"></i>`:'<i></i>').join('');
         return `<div class="ctr"><div class="t"><b>${esc(c.ten)}</b><small>${esc(x.phu)}</small></div><div class="v" style="color:var(${({done:'--done',good:'--good',warn:'--warn',bad:'--bad'})[x.m]||'--text'})">${fmtKQ(c.dd,x.v)}<small style="color:var(--primary)">Hạng ${x.hang}/${c.n}</small></div>
           <div class="dai" title="Vị trí trong ${c.n} đơn vị (trái = tốt nhất)">${dai}</div>
-          <div class="ss"><span>Toàn TP: <b>${fmtKQ(c.dd,c.tp)}</b> · BQ đơn vị: ${fmtKQ(c.dd,c.bq)}</span>${c.moc!=null?`<span>${esc(c.mocTen||'Mốc')}: ${fmtKQ(c.dd,c.moc)}</span>`:''}</div></div>`; }).join('')})); }).join('')}</div>`;
+          <div class="ss"><span>${c.tp!=null||c.bq!=null?`Toàn TP: <b>${fmtKQ(c.dd,c.tp)}</b> · BQ đơn vị: ${fmtKQ(c.dd,c.bq)}`:''}</span>${c.moc!=null?`<span>${esc(c.mocTen||'Mốc')}: ${fmtKQ(c.dd,c.moc)}</span>`:''}</div></div>`; }).join('')})); }).join('')}</div>`;
   const thieu=T.nguon.filter(n=>!o.mod[n.ma]); if(thieu.length) h+=`<p class="muted" style="margin:-6px 0 14px;font-size:12.5px">Không áp dụng / chưa có số liệu của đơn vị ở: ${thieu.map(n=>esc(n.ten)).join(', ')}.</p>`;
   h+=veNhiemVuDV(id); try{ h+=veChiDaoDV(id); }catch(e){ console.warn(e); }
   return h;
@@ -3415,7 +3437,7 @@ function veNhiemVuDV(id){
 function ganSuKienDV(){
   const p=$('#p-dv'); if(!p) return;
   p.addEventListener('click',e=>{ const b=e.target.closest('button'); if(!b) return;
-    if(b.dataset.dvct){ D().ui.dvChon=b.dataset.dvct; luuUI(); render(); window.scrollTo({top:0}); return; }
+    if(b.dataset.dvct){ ghiNK('Xem kết quả đơn vị',tenNganDV(b.dataset.dvct)); D().ui.dvChon=b.dataset.dvct; luuUI(); render(); window.scrollTo({top:0}); return; }
     if(b.hasAttribute('data-dvlui')){ D().ui.dvChon=null; luuUI(); render(); window.scrollTo({top:0}); return; }
     if(b.hasAttribute('data-dvxh')){ const c=$('#k-dv-xh'); if(c) c.scrollIntoView({behavior:'smooth',block:'start'}); return; }
     if(b.dataset.dvbc){ baoCaoDV(b.dataset.dvbc); return; }
@@ -3451,6 +3473,7 @@ function gtc(o,...ten){ if(!o) return ''; for(const t of ten){ if(o[t]!=null&&o[
 /* ---------- Bản tin (tin-tuc.mahoa.json) ---------- */
 const TIN={full:null, dang:false, luc:0, loi:null, mkThu:''};
 async function taiTin(epBuoc){
+  if(laDV()) return taiTinDonVi(epBuoc);
   if(!CO_VBD||TIN.dang) return; const ds=[TT.mkXem, ssDoc(XEM_SS), docLS(XEM_KEY), BM().mkXem].filter(Boolean); const mkThu=ds.join('\u0001');
   if(!epBuoc&&Date.now()-TIN.luc<5*60000&&(TIN.full||mkThu===TIN.mkThu)) return;
   TIN.dang=true; TIN.luc=Date.now(); TIN.mkThu=mkThu;
@@ -3467,7 +3490,7 @@ function capNhatSauTai(){ try{ capNutHop(); const ph=D().ui.phan; if(ph==='tt'||
 
 /* ---------- Đồng bộ Google Sheet qua Apps Script ---------- */
 const DB={du:null, luc:0, dang:false, loi:null};
-function cfgDB(){ const l=docJSON(DB_KEY,null); if(l&&l.url&&l.ma) return l; const c=TT.cauHinhGoc; return c&&c.dongBo&&c.dongBo.url&&c.dongBo.ma?c.dongBo:null; }
+function cfgDB(){ if(laDV()) return null; const l=docJSON(DB_KEY,null); if(l&&l.url&&l.ma) return l; const c=TT.cauHinhGoc; return c&&c.dongBo&&c.dongBo.url&&c.dongBo.ma?c.dongBo:null; }
 async function goiDB(loai,du){
   const c=cfgDB(); if(!c) throw new Error('CHUA_CAU_HINH');
   if(!/^https:\/\/script\.google(usercontent)?\.com\//.test(c.url)) throw new Error('Địa chỉ đồng bộ phải là địa chỉ Google Apps Script (https://script.google.com/...).');
@@ -3513,6 +3536,7 @@ async function anhTuHTML(html){
 }
 /* kieu: chiase | chep | tai | mail ; o: {html, ten, tieuDe, text, mails, khoa} */
 async function chiaSeAnh(kieu,o){
+  ghiNK('Chia sẻ ảnh',({chiase:'Chia sẻ',chep:'Sao chép ảnh',tai:'Tải ảnh',mail:'Gửi thư'}[kieu]||kieu)+': '+(o.tieuDe||''));
   const san=ANH.blob&&ANH.khoa===o.khoa;
   if(kieu==='chep'&&window.ClipboardItem&&navigator.clipboard&&navigator.clipboard.write){
     const p=san?Promise.resolve(ANH.blob):anhTuHTML(o.html).then(b=>{ ANH.blob=b; ANH.khoa=o.khoa; return b; });
@@ -3605,6 +3629,7 @@ function nutHopHome(){
 }
 /* ---------- Bảng lịch họp ---------- */
 function moLH(id){
+  ghiNK('Mở lịch họp','');
   LH.mo=true; const t=thongKeHop(); LH.moi=new Set(t.moi.map(h=>h.id)); ghiJSON(HOP_XEM_KEY,[...new Set([...daXem(),...t.sap.map(h=>h.id)])].slice(-400));
   LH.chon=id||(t.hom[0]||t.sap[0]||{}).id||null; LH.ctDong=!id;
   let el=$('#lh'); if(!el){ el=document.createElement('div'); el.id='lh'; el.className='lh'; el.innerHTML='<div class="lh-nen" data-lhdong></div><div class="lh-hop" role="dialog" aria-modal="true" aria-label="Lịch họp"></div>'; document.body.appendChild(el); ganLH(el); }
@@ -3653,10 +3678,14 @@ function veLHChiTiet(h){
         <textarea data-pccd rows="3" placeholder="Nhập chỉ đạo của lãnh đạo…">${esc(pc.cd||'')}</textarea></div>
       <div class="lh-f2">${nguoiChon('pcNguoi')}<label>Trạng thái<select data-pctt>${['Chưa phân công','Đã phân công','Đã thông báo','Đã dự họp','Hoãn / hủy'].map(x=>`<option${(pc.tt||(h.daPC?'Đã phân công':'Chưa phân công'))===x?' selected':''}>${x}</option>`).join('')}</select></label></div>
       <div class="lh-luu"><button class="btn primary" data-pcluu>💾 Lưu phân công${cfgDB()?' & đồng bộ Sheet':''}</button><span class="muted" data-pcthongbao></span></div>
-      <h4 style="margin-top:14px">📤 Gửi thông báo (ảnh gồm nội dung, thời gian, địa điểm, tóm tắt, chủ trì, phân công, chỉ đạo)</h4>${nutChiaSe('data-cshop')}</div>`;
+      <h4 style="margin-top:14px">📤 Gửi thông báo (ảnh gồm nội dung, thời gian, địa điểm, tóm tắt, chủ trì, phân công, chỉ đạo)</h4>${nutChiaSe('data-cshop')}</div>`.replace(/<div class="lh-pc"[\s\S]*$/,m=>laDV()?veLHDoc(h,pc):m);
 }
+/* Đơn vị: chỉ xem phân công, chỉ đạo của lãnh đạo */
+function veLHDoc(h,pc){ const ld=(pc.ld||[]).join('; ');
+  return `<div class="lh-pc doc"><h4>📌 Phân công, chỉ đạo của lãnh đạo</h4><div class="lh-tt" style="grid-template-columns:1fr">${ld?`<div><span>Lãnh đạo dự họp</span><b>${esc(ld)}</b></div>`:''}${pc.dv?`<div><span>Đơn vị chủ trì chuẩn bị</span><b>${esc(tenDayChon(pc.dv))}</b></div>`:''}${(pc.ph||[]).length?`<div><span>Phối hợp / cùng dự</span><b>${esc(pc.ph.join('; '))}</b></div>`:''}${pc.cd?`<div><span>Chỉ đạo</span><b>${esc(pc.cd).replace(/\n/g,'<br>')}</b></div>`:''}${!ld&&!pc.dv&&!pc.cd?'<div><b class="muted">Lãnh đạo chưa phân công.</b></div>':''}</div>
+    <h4 style="margin-top:14px">📤 Gửi thông báo trong đơn vị (ảnh)</h4>${nutChiaSe('data-cshop')}</div>`; }
 /* Đọc ô nhập của khung phân công */
-function docFormPC(){ const f=$('#lh .lh-pc'); if(!f) return null;
+function docFormPC(){ const f=$('#lh .lh-pc'); if(!f||!f.querySelector('[data-pcdv]')) return null;
   const ld=[...f.querySelectorAll('[data-pcld]:checked')].map(i=>i.value).concat(String(f.querySelector('[data-pcldkhac]').value||'').split(/\s*;\s*/).filter(Boolean));
   return {id:f.dataset.hop, pc:{ld, dv:f.querySelector('[data-pcdv]').value, ph:String(f.querySelector('[data-pcph]').value||'').split(/\s*;\s*/).filter(Boolean), cd:f.querySelector('[data-pccd]').value.trim(), tt:f.querySelector('[data-pctt]').value}}; }
 function ganLH(el){
@@ -3678,10 +3707,11 @@ function ganLH(el){
 }
 function luuNhapTam(){ const f=docFormPC(); if(f){ LH.sua[f.id]=f.pc; ANH.khoa=''; } }
 async function luuPhanCong(){
+  if(laDV()) return;
   const f=docFormPC(); if(!f) return; const h=dsHop().find(x=>x.id===f.id); if(!h) return;
   const nguoi=docLS(NGUOI_KEY)||''; if(!nguoi){ toast('Hãy chọn <b>Người phân công / chỉ đạo</b> (tên của mình) trước khi lưu.','warn'); $('#pcNguoi')&&$('#pcNguoi').focus(); return; }
   if(f.pc.tt==='Chưa phân công'&&(f.pc.ld.length||f.pc.dv)) f.pc.tt='Đã phân công';
-  const pc=Object.assign({},f.pc,{nguoi, luc:new Date().toISOString(), dongBo:false});
+  const pc=Object.assign({},f.pc,{nguoi, luc:new Date().toISOString(), dongBo:false}); ghiNK('Lưu phân công họp',h.so+' · '+(f.pc.ld||[]).join(', ')+(f.pc.dv?' · '+f.pc.dv:''));
   luuPcMay(h.id,pc); delete LH.sua[h.id];
   const tb=$('#lh [data-pcthongbao]');
   if(cfgDB()){ if(tb) tb.textContent='Đang đồng bộ Google Sheet…';
@@ -3793,12 +3823,12 @@ function renderTT(){
     <p class="muted" style="font-size:12.5px">Bản tin lấy từ Google Sheet “Bản tin nhanh” do tác vụ đã lên lịch cập nhật; tác vụ “Lấy tin tức” trên GitHub chép về trang (đã khóa bằng mật khẩu xem) khoảng 2 giờ một lần.</p></div>`; return; }
   const hom=homNayVN(), tat=dsTin(); const trong=n=>tat.filter(t=>t.ngay&&diffDays(t.ngay,hom)<n);
   const t7=trong(7), cd=dsChiDao(); const cdLink=new Set(cd.map(c=>c.link).filter(Boolean));
-  const rqChua=t7.filter(t=>phanLoaiTin(t).muc==='Rất quan trọng'&&!cdLink.has(t.link));
+  const rqChua=t7.filter(t=>phanLoaiTin(t).muc==='Rất quan trọng'&&(laDV()||!cdLink.has(t.link)));
   const k=[kpi('Tin 24 giờ qua',fmtNum(trong(1).length),`7 ngày: <b>${fmtNum(t7.length)}</b> · 30 ngày: ${fmtNum(trong(30).length)}`),
     kpi('Nguồn chính thống (7 ngày)',fmtNum(t7.filter(t=>phanLoaiTin(t).ct).length),'Cổng Chính phủ, Quốc hội, Bộ Tài chính, Cục Thuế…'),
     kpi('Chính sách mới (7 ngày)',fmtNum(t7.filter(t=>phanLoaiTin(t).loai==='Chính sách mới').length),'Luật, Nghị định, Thông tư, dự thảo, hiệu lực'),
-    kpi('Rất quan trọng chưa chỉ đạo',`<span style="color:var(--bad)">${fmtNum(rqChua.length)}</span>`,'trong 7 ngày – bấm “Điểm tin” để xem'),
-    kpi('Chỉ đạo đã giao',fmtNum(cd.length),`${cd.filter(c=>c.dongBo===false).length?`<span style="color:var(--warn)">${cd.filter(c=>c.dongBo===false).length} chưa đồng bộ</span> · `:''}lưu ở trang Chidao`),
+    kpi(laDV()?'Rất quan trọng (7 ngày)':'Rất quan trọng chưa chỉ đạo',`<span style="color:var(--bad)">${fmtNum(rqChua.length)}</span>`,'trong 7 ngày – bấm “Điểm tin” để xem'),
+    kpi(laDV()?'Chỉ đạo giao đơn vị':'Chỉ đạo đã giao',fmtNum(cd.length),`${cd.filter(c=>c.dongBo===false).length?`<span style="color:var(--warn)">${cd.filter(c=>c.dongBo===false).length} chưa đồng bộ</span> · `:''}lưu ở trang Chidao`),
     kpi('Đã có đánh giá AI',t7.length?fmtPct(t7.filter(coAI).length/t7.length,0):'–','tin 7 ngày có tóm tắt, ảnh hưởng, việc phải làm')];
   const diem=tat.filter(t=>t.ngay&&diffDays(t.ngay,hom)<3).sort((a,b)=>phanLoaiTin(b).diem-phanLoaiTin(a).diem).slice(0,8);
   const demBy=(ds,f)=>{ const m={}; ds.forEach(t=>{ const k=f(t); if(k) m[k]=(m[k]||0)+1; }); return Object.entries(m).sort((a,b)=>b[1]-a[1]); };
@@ -3818,10 +3848,10 @@ function renderTT(){
     veBangChiDao(cd);
 }
 function veBangChiDao(cd){
-  if(!cd.length) return the({id:'k-tt-cd', tieu:'✍ Chỉ đạo đã giao', body:'<p class="muted">Chưa có chỉ đạo. Mở một tin → bấm <b>✍ Chỉ đạo</b>.</p>'});
+  if(!cd.length) return the({id:'k-tt-cd', tieu:laDV()?'✍ Chỉ đạo giao đơn vị':'✍ Chỉ đạo đã giao', body:'<p class="muted">Chưa có chỉ đạo. Mở một tin → bấm <b>✍ Chỉ đạo</b>.</p>'});
   datXL('ttCD',{phan:'tt', ten:'9_Chi_dao', tieuDe:'CHỈ ĐẠO CỦA LÃNH ĐẠO TỪ THÔNG TIN TRUYỀN THÔNG', hdr:['Mã','Lãnh đạo chỉ đạo','Tin / văn bản gốc','Nội dung chỉ đạo','Đơn vị chủ trì','Phối hợp','Hạn','Đã tiếp nhận','Đã hoàn thành','Thời gian giao','Link'], fmt:[],
     rows:cd.map(c=>[c.id,c.ld,c.goc,c.nd,c.ct,c.ph,c.han,c.tn,c.ht,c.luc,c.link])});
-  return the({id:'k-tt-cd', tieu:'✍ Chỉ đạo đã giao', phu:'Đồng bộ với trang Chidao của Google Sheet; đơn vị cập nhật cột “đã tiếp nhận”, “đã hoàn thành” trên Sheet.', xl:'ttCD',
+  return the({id:'k-tt-cd', tieu:laDV()?'✍ Chỉ đạo của lãnh đạo giao đơn vị':'✍ Chỉ đạo đã giao', phu:'Đồng bộ với trang Chidao của Google Sheet; đơn vị cập nhật cột “đã tiếp nhận”, “đã hoàn thành” trên Sheet.', xl:'ttCD',
     body:`<div class="table-wrap"><table class="rpt ke"><thead><tr><th>Thời gian giao</th><th>Lãnh đạo</th><th>Tin / văn bản gốc</th><th>Nội dung chỉ đạo</th><th>Chủ trì</th><th>Hạn</th><th>Tiến độ</th></tr></thead><tbody>${cd.slice(0,60).map(c=>`<tr><td class="c">${esc(fmtLuc(c.luc))}${c.dongBo===false?'<br><span class="tag" style="background:var(--warn-soft);color:var(--warn)">chưa đồng bộ</span>':''}</td><td class="wrap" style="min-width:140px">${esc(c.ld)}</td><td class="wrap">${c.link?`<a href="${esc(c.link)}" target="_blank" rel="noopener noreferrer">${esc(c.goc||c.link)}</a>`:esc(c.goc)}</td><td class="wrap">${esc(c.nd)}</td><td class="wrap" style="min-width:120px">${esc(c.ct)}${c.ph?`<br><small class="muted">PH: ${esc(c.ph)}</small>`:''}</td><td class="c">${esc(c.han)}</td><td class="wrap" style="min-width:120px">${c.ht?tag('good','✔ '+esc(c.ht)):c.tn?tag('info','Đã nhận: '+esc(c.tn)):tag('warn','Chưa tiếp nhận')}</td></tr>`).join('')}</tbody></table></div>`});
 }
 /* ---------- Chi tiết tin, chỉ đạo ---------- */
@@ -3856,8 +3886,10 @@ function moTin(id){ const t=dsTin().find(x=>String(x.id)===String(id)); if(!t) r
 function docFormCD(){ const g=id=>{ const e=$('#'+id); return e?e.value.trim():''; }; if(!$('#cdND')||$('#mTin .cd-f').classList.contains('hidden')) return null;
   const ldTen=g('cdLD'); const o=dsLanhDao().find(x=>x.ten===ldTen); return {ld:o?nhanLD(o):ldTen, ldTen, nd:g('cdND'), ct:g('cdCT'), ph:g('cdPH'), han:g('cdHan')?fmtDate(g('cdHan')):'', pt:g('cdPT')}; }
 async function luuChiDao(){
+  if(laDV()) return;
   const t=TIN_CHON; const f=docFormCD(); if(!t||!f) return; if(!f.nd){ toast('Hãy nhập nội dung chỉ đạo.','warn'); return; }
   const nguoi=docLS(NGUOI_KEY)||f.ldTen; if(!nguoi){ toast('Hãy chọn người chỉ đạo.','warn'); return; }
+  ghiNK('Lưu chỉ đạo',t.tieu_de+' · '+f.ct);
   const id='CD-'+homNayVN().replace(/-/g,'')+'-'+Math.random().toString(36).slice(2,6).toUpperCase();
   const c={id, ld:f.ld, goc:t.tieu_de+' ('+(t.nguon||host(t.link))+', '+(t.ngay?fmtDate(t.ngay):'')+')', nd:f.nd, ct:f.ct, ph:f.ph, han:f.han, link:t.link, tn:'', ht:'', bc:'', luc:new Date().toISOString(), pt:f.pt||nguoi, dongBo:false};
   const may=docJSON(CD_LOCAL_KEY,[]); may.unshift(c); ghiJSON(CD_LOCAL_KEY,may.slice(0,300));
@@ -3924,7 +3956,8 @@ function veChiDaoDV(id){
 function chinhTab(){ const tb=$('#tabbar'); if(!tb) return; tb.classList.remove('gon'); if(tb.scrollWidth>tb.clientWidth+2) tb.classList.add('gon'); }
 function render(){
   if(typeof CONG!=='undefined'&&CONG.khoa) return;     // chưa mở khóa: không vẽ gì
-  const st=D(); const ph=st.ui.phan;
+  const st=D(); if(laDV()&&!['home','dv','tt'].includes(st.ui.phan)) st.ui.phan='home';
+  const ph=st.ui.phan; if(ph!==NK.phCu){ NK.phCu=ph; ghiNK('Mở phần',TEN_PHAN_NK[ph]||ph); }
   $$('.part-btn').forEach(b=>{ const on=b.dataset.phan===ph; b.classList.toggle('on',on); b.setAttribute('aria-selected',on); });
   { const tb=$('#tabbar'), b=$(`.part-btn[data-phan="${ph}"]`); if(tb&&b){ tb.style.setProperty('--tabc',PHAN[ph]?`var(${PHAN[ph].mau})`:'#1d4ed8'); const l=b.offsetLeft-tb.offsetLeft, r=l+b.offsetWidth; if(l<tb.scrollLeft||r>tb.scrollLeft+tb.clientWidth) tb.scrollLeft=Math.max(0,l-(tb.clientWidth-b.offsetWidth)/2); } }
   $$('.phan').forEach(s=>s.classList.toggle('hidden',s.id!=='p-'+ph));
@@ -3942,7 +3975,7 @@ function render(){
     else if(SAMPLE===CHIA_SE){ $('#sampleText').innerHTML=`📤 <b>BẢN CHIA SẺ</b><span class="bn-mo">▾ chi tiết</span><span class="bn-ct"> – số liệu gói sẵn trong file${CHIA_SE.chiaSe&&CHIA_SE.chiaSe.luc?`, xuất lúc ${new Date(CHIA_SE.chiaSe.luc).toLocaleString('vi-VN')}`:''}. Chỉ để xem; không ghi vào máy này.</span>`; $('#btnExitSample').textContent='Dùng số liệu riêng của máy này'; }
     else { $('#sampleText').innerHTML='⚠ Đang xem <b>DỮ LIỆU GIẢ LẬP</b><span class="bn-ct"> để thử giao diện — không phải số liệu thật, không được lưu.</span><span class="bn-mo">▾ chi tiết</span>'; $('#btnExitSample').textContent='Thoát dữ liệu giả lập'; } }
   else bn.classList.add('hidden');
-  if(ph==='home'){ try{ renderHome(); }catch(e){ console.error(e); $('#p-home').innerHTML=`<div class="banner warn">Lỗi hiển thị: ${esc(e.message)}</div>`; } if(DH.mo) veDH(); return; }
+  if(ph==='home'){ try{ laDV()?renderHomeDV():renderHome(); }catch(e){ console.error(e); $('#p-home').innerHTML=`<div class="banner warn">Lỗi hiển thị: ${esc(e.message)}</div>`; } if(DH.mo) veDH(); return; }
   if(ph==='tt'){ try{ renderTT(); }catch(e){ console.error(e); $('#p-tt').innerHTML=`<div class="banner warn">Lỗi hiển thị: ${esc(e.message)}</div>`; } if(DH.mo) veDH(); donRac(); return; }
   if(ph==='dv'){ try{ renderDV(); }catch(e){ console.error(e); $('#p-dv').innerHTML=`<div class="banner warn">Lỗi hiển thị: ${esc(e.message)}</div>`; } if(DH.mo) veDH(); donRac(); return; }
   // chọn kỳ
@@ -4110,6 +4143,7 @@ function moCaiDat(){
     <div class="form-grid"><label style="grid-column:span 2">Mật khẩu xem (khóa số liệu)<input type="password" id="sMkXem" value="${esc(BM().mkXem||TT.mkXem||'')}" autocomplete="new-password" placeholder="Ít nhất 8 ký tự"></label><label style="grid-column:span 2">Mật khẩu quản trị mới (để trống = giữ nguyên)<input type="password" id="sMkQT" autocomplete="new-password" placeholder="Ít nhất 8 ký tự, khác mật khẩu xem"></label></div>
     <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn sm" id="sMkHien">👁 Hiện/ẩn mật khẩu</button><button class="btn sm primary" id="sMkLuu">💾 Lưu mật khẩu cho máy này</button><button class="btn sm" id="sQtKhoa">🔒 Khóa lại quyền quản trị</button></div>
     <p class="muted" style="margin:6px 0 0;font-size:12px">Đặt hoặc đổi mật khẩu xong: (1) bấm <b>Tạo file cau_hinh.json</b> bên dưới và tải lên GitHub thay file cũ; (2) bấm <b>⬇ Xuất → ☁ Xuất file cho Google Drive</b> và chép đè lên Drive; (3) báo mật khẩu xem mới cho mọi người. Mật khẩu xem được lưu trên máy này để tự khóa mỗi lần xuất file.</p>
+    ${veCaiDatDonVi()}
     <h4>Đồng bộ Google Sheet (phân công lịch họp, chỉ đạo)</h4>
     <p class="muted" style="margin:0 0 6px;font-size:12px">Ghi phân công lãnh đạo dự họp, chỉ đạo về Google Sheet “Bản tin nhanh” (trang LichHop, Chidao) để mọi máy cùng thấy. Cài theo <b>huong-dan/HUONG_DAN_DONG_BO_SHEET.md</b>. Đang dùng: <b>${docJSON(DB_KEY,null)?'Cài đặt trên máy này':cfgDB()?'file cau_hinh.json của trang':'chưa cấu hình (chỉ lưu trên từng máy)'}</b>${DB.loi&&cfgDB()?` · <span style="color:var(--bad)">${esc(DB.loi)}</span>`:''}</p>
     <div class="form-grid"><label style="grid-column:span 2">Địa chỉ Apps Script (kết thúc bằng /exec)<input type="text" id="sDbUrl" value="${esc((cfgDB()||{}).url||'')}" placeholder="https://script.google.com/macros/s/.../exec"></label><label style="grid-column:span 2">Mã bí mật (đặt trong Apps Script)<input type="password" id="sDbMa" value="${esc((cfgDB()||{}).ma||'')}" autocomplete="new-password"></label></div>
@@ -4449,7 +4483,7 @@ async function taiNoiDung(id,khoa){
   try{ return await goiDrive(`https://www.googleapis.com/download/drive/v3/files/${id}?alt=media&supportsAllDrives=true&key=${k}`); }
   catch(e){ try{ return await goiDrive(`${GAPI}/${id}?alt=media&supportsAllDrives=true&key=${k}`); }catch(e2){ throw e; } }
 }
-async function timFileMoiNhat(ch){
+async function timFileMoiNhat(ch,loc){
   const m=maTuLink(ch.link); if(!m) throw new Error('Link Google Drive không đúng.'); const k=encodeURIComponent(ch.khoa);
   let thuMuc=m.loai==='thuMuc'?m.id:null;
   if(!thuMuc){   // link dạng file/d/… hoặc open?id=… (Google Drive cho máy tính): hỏi Drive xem là thư mục hay file
@@ -4460,7 +4494,7 @@ async function timFileMoiNhat(ch){
   }
   const q=encodeURIComponent(`'${thuMuc}' in parents and trashed=false`);
   const r=await goiDrive(`${GAPI}?q=${q}&orderBy=modifiedTime%20desc&pageSize=50&fields=files(id,name,modifiedTime,size,mimeType)&supportsAllDrives=true&includeItemsFromAllDrives=true&key=${k}`);
-  const ds=((await r.json()).files||[]).filter(f=>/\.json$/i.test(f.name)&&!/^application\/vnd\.google-apps\./.test(f.mimeType||''));
+  const ds=((await r.json()).files||[]).filter(f=>/\.json$/i.test(f.name)&&!/^application\/vnd\.google-apps\./.test(f.mimeType||'')&&(loc?loc(f):!/^ket_qua_don_vi/i.test(f.name)));
   if(!ds.length) throw new Error('Thư mục Drive chưa có file .json.');
   ds.sort((a,b)=>a.modifiedTime<b.modifiedTime?1:-1); return ds[0];
 }
@@ -4556,8 +4590,9 @@ async function layMauKhoa(){
   return {mau:null, loiMang};
 }
 async function thuMkCong(mk){ if(!mk||!CONG.mau) return false; try{ await giaiMa(CONG.mau,mk); return true; }catch(e){ if(e&&/hỗ trợ mã hóa/.test(e.message)) throw e; return false; } }
-function moCong(mk,nho){
-  TT.mkXem=mk; ssGhi(XEM_SS,mk); ssXoa(KHOA_SS);
+function moCong(mk,nho,vai){
+  if(vai&&vai.loai==='dv'){ Object.assign(VAI,vai); TT.mkXem=null; } else { VAI.loai='ld'; TT.mkXem=mk; }
+  ssGhi(XEM_SS,mk); ssXoa(KHOA_SS);
   if(nho===true) ghiLS(XEM_KEY,mk); else if(nho===false) xoaLS(XEM_KEY);
   CONG.khoa=false; document.documentElement.classList.remove('cho-mo');
   const f=CONG.xong; CONG.xong=null; if(f) f(true);
@@ -4569,15 +4604,16 @@ function hienCong(moTa,coForm,loi){
 }
 async function kiemCong(){
   const {mau,loiMang}=await layMauKhoa(); CONG.mau=mau;
-  if(!mau){
+  const coDV=window.VBDC?await VBDC.coTepKhoaDV():false;
+  if(!mau&&!coDV){
     if(loiMang){ hienCong('Không kiểm tra được quyền truy cập (mất mạng hoặc trang chưa tải xong). Kiểm tra kết nối rồi bấm <b>Thử lại</b>.',false); return; }
     CONG.coMK=false; moCong(TT.mkXem||'',null); return;      // trang chưa đặt mật khẩu xem (không có file khóa) → mở như cũ
   }
   CONG.coMK=true;
   if(ssDoc(KHOA_SS)!=='1'){   // vừa bấm “Khóa app” thì không tự mở bằng mật khẩu đã nhớ
-    for(const mk of [TT.mkXem, ssDoc(XEM_SS), docLS(XEM_KEY), BM().mkXem].filter(Boolean)){ if(await thuMkCong(mk)){ moCong(mk,null); return; } }
+    for(const mk of [TT.mkXem, ssDoc(XEM_SS), docLS(XEM_KEY), BM().mkXem].filter(Boolean)){ const v=await thuMatKhau(mk); if(v){ CONG.tuDong=true; moCong(mk,null,v); return; } }
   }
-  hienCong('Báo cáo phục vụ chỉ đạo, điều hành – <b>chỉ dành cho người được cấp mật khẩu</b>. Nhập <b>mật khẩu xem</b> do Văn phòng cung cấp để mở.',true);
+  hienCong('Báo cáo phục vụ chỉ đạo, điều hành – <b>chỉ dành cho người được cấp mật khẩu</b>. Nhập <b>mật khẩu</b> do Văn phòng cung cấp (lãnh đạo hoặc mật khẩu của đơn vị) để mở.',true);
 }
 function khoiDongCong(){
   const web=/^https?:$/.test(location.protocol);
@@ -4589,10 +4625,10 @@ function khoiDongCong(){
     if(Date.now()<CONG.choDen){ $('#congLoi').textContent=`Nhập sai nhiều lần – chờ ${Math.ceil((CONG.choDen-Date.now())/1000)} giây rồi thử lại.`; return; }
     if(!mk){ $('#congLoi').textContent='Hãy nhập mật khẩu.'; return; }
     nut.disabled=true; $('#congLoi').textContent='Đang kiểm tra…';
-    let ok=false; try{ ok=await thuMkCong(mk); }catch(err){ $('#congLoi').textContent=err.message; nut.disabled=false; return; }
+    let ok=null; try{ ok=await thuMatKhau(mk); }catch(err){ $('#congLoi').textContent=err.message; nut.disabled=false; return; }
     nut.disabled=false;
-    if(ok){ CONG.sai=0; $('#congMk').value=''; moCong(mk,$('#congNho').checked); return; }
-    CONG.sai++; $('#congMk').value=''; hop.classList.remove('lac'); void hop.offsetWidth; hop.classList.add('lac');
+    if(ok){ CONG.sai=0; CONG.tuDong=false; $('#congMk').value=''; moCong(mk,$('#congNho').checked,ok); return; }
+    CONG.sai++; demSai(); $('#congMk').value=''; hop.classList.remove('lac'); void hop.offsetWidth; hop.classList.add('lac');
     if(CONG.sai>=5){ const giay=Math.min(300,30*Math.pow(2,CONG.sai-5)); CONG.choDen=Date.now()+giay*1000; $('#congLoi').textContent=`Mật khẩu không đúng (${CONG.sai} lần). Tạm khóa ${giay} giây.`; }
     else $('#congLoi').textContent=`Mật khẩu không đúng, hãy nhập lại (lần ${CONG.sai}/5).`;
     $('#congMk').focus(); });
@@ -4603,9 +4639,219 @@ function khoiDongCong(){
 /* Khóa app trên máy này: quên mật khẩu đã nhớ, khóa quyền quản trị, hiện lại cổng */
 function khoaApp(){
   if(!confirm('Khóa app trên máy này?\n\nLần mở sau phải nhập lại mật khẩu xem (nên dùng khi dùng máy chung).')) return;
+  ghiNK('Khóa app',''); guiNK(true);
   xoaLS(XEM_KEY); ssXoa(XEM_SS); ssGhi(KHOA_SS,'1'); TT.mkXem=null; TT.qtMo=false; try{ sessionStorage.removeItem(QT_SS); }catch(e){}
-  location.reload();
+  setTimeout(()=>location.reload(),300);
 }
+
+/* =====================================================================
+   PHẦN 14d. MẬT KHẨU ĐƠN VỊ · CHẾ ĐỘ ĐƠN VỊ · NHẬT KÝ ĐĂNG NHẬP, SỬ DỤNG
+   - Mật khẩu xem (cau_hinh.json): lãnh đạo – xem toàn bộ, chỉ đạo, phân công.
+   - Mật khẩu đơn vị (khoa_don_vi.json): mỗi phòng, Thuế cơ sở một mật khẩu; mở ra thông tin của đúng đơn vị đó
+     (mã, tên, khóa dữ liệu riêng). Dữ liệu đơn vị khóa riêng: kết quả + thứ hạng (file Ket_qua_don_vi*.json trên Drive),
+     văn bản đến chủ trì/phối hợp (don-vi/<MÃ>.vbd.json), lịch họp, chỉ đạo liên quan (don-vi/<MÃ>.tin.json), bản tin chung.
+     Đơn vị không mở được dữ liệu của đơn vị khác, không có chỉ đạo, phân công, nhập số liệu, cài đặt.
+   - Nhật ký: ghi đăng nhập, mở phần, xuất, chia sẻ… về trang NhatKy của Google Sheet (Apps Script).
+   ===================================================================== */
+const VAI={loai:'ld'};                       // 'ld' = lãnh đạo; 'dv' = đơn vị (+ ma, ten, khoa, chung, drive, nhatKy)
+const laDV=()=>VAI.loai==='dv';
+const MK_SAI_KEY='dashboardDieuHanhBacNinh2026_mksai', TB_KEY='dashboardDieuHanhBacNinh2026_thietbi';
+/* Thử một mật khẩu: mật khẩu xem (lãnh đạo) trước, sau đó mật khẩu đơn vị */
+async function thuMatKhau(mk){
+  if(!mk) return null;
+  if(CONG.mau&&await thuMkCong(mk)) return {loai:'ld'};
+  if(window.VBDC){ try{ const v=await VBDC.moKhoaDonVi(mk); if(v) return Object.assign({loai:'dv'},v); }catch(e){ console.warn(e); } }
+  return null;
+}
+function demSai(){ const o=docJSON(MK_SAI_KEY,{n:0}); o.n=(o.n||0)+1; o.luc=new Date().toISOString(); ghiJSON(MK_SAI_KEY,o); }
+
+/* ---------- Bắt đầu chế độ đơn vị ---------- */
+const DVKQ={du:null, loi:null, file:null, dang:false};
+function batDauDonVi(){
+  document.body.classList.add('che-dv');
+  const t=$('.part-btn[data-phan="dv"]'); if(t){ t.querySelector('.tdai').textContent='Kết quả của đơn vị'; t.querySelector('.tngan').textContent='Kết quả'; t.title='Kết quả, thứ hạng từng nhiệm vụ của đơn vị'; }
+  const br=$('.brand > div:last-child'); if(br&&!$('.vai-dv')) br.insertAdjacentHTML('beforeend',`<span class="vai-dv" title="Đang dùng mật khẩu của đơn vị">👥 ${esc(VAI.ten||VAI.ma)}</span>`);
+  D().ui.phan='home'; D().ui.dvChon=VAI.ma;
+  try{ render(); }catch(e){ console.error(e); }
+  taiKQDonVi(); if(CO_VBD){ taiVBD(); taiTin(); } capNutHop();
+  setInterval(()=>{ if(document.visibilityState==='visible'){ taiKQDonVi(); if(CO_VBD){ taiVBD(); taiTin(); } } },5*60000);
+}
+async function taiKQDonVi(){
+  if(!laDV()||DVKQ.dang) return; const c=VAI.drive;
+  if(!c||!c.link||!c.khoa){ DVKQ.loi='Chưa có cấu hình Google Drive cho đơn vị – báo quản trị tạo lại tệp khoa_don_vi.json.'; return; }
+  DVKQ.dang=true;
+  try{
+    const f=await timFileMoiNhat(c,x=>/^ket_qua_don_vi/i.test(x.name));
+    if(DVKQ.du&&DVKQ.file&&f.id===DVKQ.file.id&&f.modifiedTime===DVKQ.file.modifiedTime) return;
+    const o=await (await taiNoiDung(f.id,c.khoa)).json(); const e=o&&o.ds&&o.ds[VAI.ma];
+    if(!e){ DVKQ.du=null; DVKQ.loi='File kết quả chưa có số liệu của đơn vị.'; }
+    else { DVKQ.du=await VBDC.giaiMaKhoa(e,VAI.khoa); DVKQ.du.luc=o.luc||f.modifiedTime; DVKQ.loi=null; }
+    DVKQ.file=f;
+  }catch(e){ DVKQ.loi=/chưa có file/i.test(e.message)?'Quản trị chưa xuất kết quả cho các đơn vị lên Google Drive.':e.message; }
+  finally{ DVKQ.dang=false; const ph=D().ui.phan; if(ph==='home'||ph==='dv') render(); }
+}
+async function taiVBDDonVi(){
+  if(VBD.dang) return; if(VBD.full&&Date.now()-VBD.luc<5*60000) return; VBD.dang=true; VBD.luc=Date.now();
+  try{ const r=await fetch(`don-vi/${encodeURIComponent(VAI.ma)}.vbd.json?t=${Date.now()}`,{cache:'no-store'});
+    if(!r.ok){ VBD.loi=r.status===404?'Chưa có văn bản đến của đơn vị (quản trị cần đặt mã gốc đơn vị trên GitHub).':'Không tải được văn bản đến (mã '+r.status+').'; return; }
+    const d=await VBDC.giaiMaKhoa(await r.json(),VAI.khoa); VBD.full=d; VBD.dl=tomTatVBD(d); VBD.loi=null; await napVBDC(); capNutHop(); baoHopMoi(); }
+  catch(e){ VBD.loi='Không mở được văn bản đến của đơn vị.'; console.warn(e); }
+  finally{ VBD.dang=false; const ph=D().ui.phan; if(ph==='home'||ph==='dv') render(); if(LH.mo) veLH(); }
+}
+async function taiTinDonVi(ep){
+  if(TIN.dang) return; if(!ep&&TIN.full&&Date.now()-TIN.luc<5*60000) return; TIN.dang=true; TIN.luc=Date.now();
+  try{ const lay=async(ten,khoa)=>{ const r=await fetch(`don-vi/${encodeURIComponent(ten)}.tin.json?t=${Date.now()}`,{cache:'no-store'}); return r.ok?VBDC.giaiMaKhoa(await r.json(),khoa):null; };
+    const [chung,rieng]=await Promise.all([lay('chung',VAI.chung).catch(()=>null),lay(VAI.ma,VAI.khoa).catch(()=>null)]);
+    if(!chung&&!rieng){ TIN.loi='Chưa có bản tin cho đơn vị (quản trị cần đặt mã gốc đơn vị trên GitHub).'; return; }
+    TIN.full={cap_nhat_luc:new Date().toISOString(), tin:(chung&&chung.tin)||[], lanh_dao:[], lich_hop:(rieng&&rieng.lich_hop)||[], chi_dao:(rieng&&rieng.chi_dao)||[]}; TIN.loi=null; }
+  catch(e){ TIN.loi='Không mở được bản tin của đơn vị.'; }
+  finally{ TIN.dang=false; capNhatSauTai(); }
+}
+
+/* ---------- Gói kết quả cho đơn vị: chỉ số của đơn vị + thứ hạng (không có số liệu đơn vị khác) ---------- */
+function goiKQDonVi(T,ma){
+  const o=T.dv[ma]; if(!o) return {ma, ten:tenDayDV(ma), nguon:[]};
+  return {ma, ten:o.ten, khoi:o.khoi, diem:o.diem, hang:o.hang, n:o.n, hangKhoi:o.hangKhoi, nKhoi:o.nKhoi,
+    nguon:T.nguon.filter(n=>o.mod[n.ma]).map(n=>({ma:n.ma, ten:n.ten, tenDay:n.tenDay, icon:n.icon, mau:n.mau, ngay:n.ngay, mod:{diem:o.mod[n.ma].diem, hang:o.mod[n.ma].hang, n:o.mod[n.ma].n},
+      ct:o.mod[n.ma].ct.map(c=>({ma:c.ma, ten:c.ten, cao:c.cao, dd:c.dd, moc:c.moc, mocTen:c.mocTen, n:c.n, x:Object.assign({},c.gt[ma])}))}))};
+}
+function taoTDonVi(b){
+  const ma=b.ma, T={nguon:[], dv:{}, phong:[ma], tcs:[]};
+  const o={id:ma, khoi:/^TCS/.test(ma)?'tcs':'phong', ten:b.ten||tenDayDV(ma), ngan:tenNganDV(ma), mod:{}, diem:b.diem, hang:b.hang, n:b.n, hangKhoi:b.hangKhoi, nKhoi:b.nKhoi, soMod:(b.nguon||[]).length};
+  for(const n of b.nguon||[]){ const ct=n.ct.map(c=>Object.assign({},c,{gt:{[ma]:c.x}, thuTu:Array.from({length:Math.max(1,c.n||1)},(_,i)=>i===(c.x.hang||1)-1?ma:'_'+i)}));
+    T.nguon.push(Object.assign({},n,{ct})); o.mod[n.ma]=Object.assign({},n.mod,{ct}); }
+  T.dv[ma]=o; return T;
+}
+function gocDV(){ const b=BM().dv; return (b&&b.goc)||(TT.cauHinhGoc&&TT.cauHinhGoc.dvGoc)||''; }
+async function xuatKQDonVi(){
+  const goc=gocDV(); if(!goc){ toast('Chưa có <b>mã gốc đơn vị</b> – vào ⚙ Cài đặt → Mật khẩu đơn vị.','warn',8000); return; }
+  if(!DS_PHAN.some(p=>ngayCo(p).length)){ toast('Chưa có số liệu để xuất.','warn'); return; }
+  if(SAMPLE&&SAMPLE!==TT.st&&SAMPLE!==CHIA_SE&&!confirm('Đang xem DỮ LIỆU GIẢ LẬP. Vẫn xuất kết quả đơn vị với dữ liệu giả lập?')) return;
+  let txt; loading(true,'Đang khóa kết quả cho từng đơn vị…');
+  try{ const T=tongHopDV(); const ds={};
+    for(const ma of VBDC.DS_DON_VI) ds[ma]=await VBDC.maHoaKhoa(goiKQDonVi(T,ma),await VBDC.khoaTuGoc(goc,ma));
+    txt=JSON.stringify({phien_ban:1, luc:new Date().toISOString(), ghiChu:'Kết quả, thứ hạng của từng đơn vị – mỗi đơn vị chỉ mở được phần của mình bằng mật khẩu đơn vị', ds}); }
+  catch(e){ toast('Không tạo được file: '+esc(e.message),'err'); return; } finally{ loading(false); }
+  const ten='Ket_qua_don_vi.json';
+  if(window.showSaveFilePicker){ try{ const h=await showSaveFilePicker({suggestedName:ten,types:[{description:'Kết quả đơn vị',accept:{'application/json':['.json']}}]}); const w=await h.createWritable(); await w.write(txt); await w.close();
+      toast('Đã lưu <b>Ket_qua_don_vi.json</b>. Nếu lưu vào thư mục Google Drive trên máy, file tự đồng bộ; nếu không, hãy chép vào thư mục Drive chia sẻ (cùng chỗ file số liệu).','ok',10000); ghiNK('Xuất kết quả cho đơn vị',''); return; }catch(e){ if(e&&e.name==='AbortError') return; } }
+  taiXuong(new Blob([txt],{type:'application/json'}),ten); ghiNK('Xuất kết quả cho đơn vị','');
+  toast('Đã tải <b>Ket_qua_don_vi.json</b> – chép vào thư mục Google Drive chia sẻ (cùng chỗ file số liệu, xóa bản cũ nếu Drive tạo bản mới).','ok',10000);
+}
+
+/* ---------- Trang chủ của đơn vị ---------- */
+function renderHomeDV(){
+  const el=$('#p-home'); if(CO_VBD) setTimeout(()=>{ taiVBD(); taiTin(); },0);
+  const b=DVKQ.du, T=b?taoTDonVi(b):null, o=T&&T.dv[VAI.ma]; const K=vbdCT(); const v=K&&K.tk.find(x=>x.ma===VAI.ma);
+  const hom=homNayVN(); const tin=dsTin().filter(t=>t.ngay&&diffDays(t.ngay,hom)<3).sort((a,c)=>phanLoaiTin(c).diem-phanLoaiTin(a).diem).slice(0,5);
+  const phoiHop=K?K.DS.filter(x=>!x.mat&&x._ma!==VAI.ma).length:0;
+  el.innerHTML=`<div class="home dvh"><div class="home-dau"><div><small>CỤC THUẾ · ${esc(TEN_CQ.toUpperCase())}</small><h2>${esc(VAI.ten||VAI.ma)}</h2>
+      <p>Kết quả thực hiện nhiệm vụ và thứ hạng của đơn vị; văn bản đơn vị chủ trì, phối hợp; lịch họp; thông tin truyền thông.${b&&b.luc?` Kết quả cập nhật ${esc(fmtLuc(b.luc))}.`:''}</p></div>
+      <div class="home-nut">${nutHopHome()}<button data-go="dv">🏛 Kết quả, thứ hạng của đơn vị</button>${CO_VBD?nutVBD():''}<button data-go="tt">📰 Thông tin truyền thông</button></div></div>
+    <div class="dvh-than">
+      <div class="dvh-the dvh-xh">${o&&o.diem!=null?`${vongDiem(o.diem)}<div><span class="l">Thứ hạng chung</span><b>#${o.hang}</b><small>/ ${o.n} đơn vị</small><span class="l">Trong khối ${o.khoi==='tcs'?'Thuế cơ sở':'phòng'}</span><b>#${o.hangKhoi}</b><small>/ ${o.nKhoi}</small></div>`:`<p>${esc(DVKQ.loi||(b?'Đơn vị chưa có số liệu ở các phần chuyên môn.':'Đang tải kết quả của đơn vị…'))}</p>`}</div>
+      ${T?T.nguon.map(n=>`<button class="dvh-the" data-go="dv"><span class="t">${n.icon} ${esc(n.ten)} <small>hạng ${n.mod.hang}/${n.mod.n}</small></span>${n.ct.map(c=>`<span class="ct"><em>${esc(c.ten.replace(/ \(.*\)$/,''))}</em><b style="color:${mauKQ(c.x.m)}">${fmtKQ(c.dd,c.x.v)}</b><u>#${c.x.hang}/${c.n}</u></span>`).join('')}</button>`).join(''):''}
+      ${CO_VBD?`<a class="dvh-the" href="van-ban-den.html"><span class="t">📥 Văn bản đến của đơn vị</span>${v?`<span class="ct"><em>Nhiệm vụ đang xử lý</em><b>${v.dang}</b></span><span class="ct"><em>Quá hạn</em><b style="color:${v.qua?'#ff8a94':'#86ef5a'}">${v.qua}</b></span><span class="ct"><em>Hạn trong 3 ngày</em><b style="color:#ffb020">${v.hom+v.s3}</b></span><span class="ct"><em>Họp sắp tới</em><b>${v.hop}</b></span>`:`<span class="ct"><em>${esc(VBD.loi||(VBD.full?'Không có nhiệm vụ chủ trì':'Đang tải…'))}</em></span>`}${phoiHop?`<span class="ct"><em>Văn bản phối hợp</em><b>${phoiHop}</b></span>`:''}</a>`:''}
+      ${tin.length?`<button class="dvh-the" data-go="tt"><span class="t">📰 Tin cần lưu ý</span>${tin.map(t=>`<span class="ct"><em>${esc(t.tieu_de)}</em></span>`).join('')}</button>`:''}
+    </div></div>`;
+}
+function renderDVDonVi(){
+  const el=$('#p-dv'); if(CO_VBD&&!VBD.full) setTimeout(()=>taiVBD(),0);
+  if(!DVKQ.du){ el.innerHTML=`<div class="dvct-dau"><div class="tt"><small>KẾT QUẢ THỰC HIỆN NHIỆM VỤ</small><h2>${esc(VAI.ten||VAI.ma)}</h2><p>${esc(DVKQ.loi||'Đang tải kết quả của đơn vị…')}</p></div></div>`+veNhiemVuDV(VAI.ma)+(()=>{ try{ return veChiDaoDV(VAI.ma); }catch(e){ return ''; } })(); return; }
+  const T=taoTDonVi(DVKQ.du); TH_DV=T; el.innerHTML=veChiTietDV(T,VAI.ma); veBieuDoDV(T,VAI.ma); thuGon(el);
+}
+
+/* ---------- Cài đặt: mật khẩu đơn vị (máy quản trị) ---------- */
+function taoMKDonVi(ma){ const a='abcdefghjkmnpqrstuvwxyz23456789'; const r=crypto.getRandomValues(new Uint8Array(12)); const s=[...r].map(x=>a[x%a.length]).join(''); return ma+'-'+s.slice(0,4)+'-'+s.slice(4,8)+'-'+s.slice(8); }
+const taoMaNgauNhien=n=>VBDC.b64e(crypto.getRandomValues(new Uint8Array(n)));
+function veCaiDatDonVi(){
+  const b=BM().dv||{}; const mk=b.mk||{}; const goc=b.goc||(TT.cauHinhGoc&&TT.cauHinhGoc.dvGoc)||'';
+  return `<h4>👥 Mật khẩu đơn vị (phòng, Thuế cơ sở) · nhật ký đăng nhập</h4>
+    <p class="muted" style="margin:0 0 6px;font-size:12px">Mỗi đơn vị một mật khẩu: chỉ xem kết quả, thứ hạng của đơn vị mình; văn bản đến đơn vị chủ trì, phối hợp; lịch họp, chỉ đạo liên quan; bản tin (không có chỉ đạo). <b>Mật khẩu xem</b> hiện tại vẫn dành cho lãnh đạo. Làm theo <b>huong-dan/HUONG_DAN_MAT_KHAU_DON_VI.md</b>.</p>
+    <div class="form-grid"><label style="grid-column:span 2">Mã gốc đơn vị (đặt vào GitHub secret <b>MA_GOC_DON_VI</b>)<input type="text" id="sDvGoc" value="${esc(goc)}" placeholder="bấm 🎲 Tạo mã gốc"></label><label style="grid-column:span 2">Mã nhật ký (đặt vào Apps Script: thuộc tính <b>MA_NHAT_KY</b>)<input type="text" id="sDvNK" value="${esc(b.nk||'')}" placeholder="bấm 🎲 Tạo mã nhật ký"></label></div>
+    <div style="margin:8px 0;display:flex;gap:8px;flex-wrap:wrap"><button class="btn sm" id="sDvTaoGoc">🎲 Tạo mã gốc</button><button class="btn sm" id="sDvTaoNK">🎲 Tạo mã nhật ký</button><button class="btn sm" data-dvchep="sDvGoc">📋 Sao chép mã gốc</button><button class="btn sm" data-dvchep="sDvNK">📋 Sao chép mã nhật ký</button></div>
+    <div class="table-wrap"><table class="rpt"><thead><tr><th>Đơn vị</th><th>Mật khẩu (ít nhất 8 ký tự, khác nhau, khác mật khẩu xem)</th><th></th></tr></thead><tbody>${VBDC.DS_DON_VI.map(ma=>`<tr><td><b>${esc(VBDC.TEN_DV[ma]||ma)}</b> <span class="muted">(${ma})</span></td><td><input type="text" data-dvmk="${ma}" value="${esc(mk[ma]||'')}" autocomplete="off" style="width:100%;min-width:200px"></td><td><button class="btn sm" data-dvtao="${ma}" title="Tạo mật khẩu ngẫu nhiên">🎲</button></td></tr>`).join('')}</tbody></table></div>
+    <div style="margin-top:8px;display:flex;gap:8px;flex-wrap:wrap"><button class="btn sm" id="sDvTaoHet">🎲 Tạo mật khẩu cho ô còn trống</button><button class="btn sm" id="sDvLuu">💾 Lưu trên máy này</button><button class="btn sm primary" id="sDvFile">📄 Tạo file khoa_don_vi.json</button><button class="btn sm" id="sDvIn">🖨 In phiếu giao mật khẩu</button></div>
+    <p class="muted" style="margin:6px 0 0;font-size:12px">Đổi mật khẩu một đơn vị: sửa ô → <b>Tạo file khoa_don_vi.json</b> → tải lên GitHub thay file cũ. Mã gốc chỉ đổi khi nghi bị lộ (phải đặt lại secret và tạo lại mọi thứ).</p>`;
+}
+function docODonVi(){ const mk={}; $$('[data-dvmk]').forEach(i=>{ const v=i.value.trim(); if(v) mk[i.dataset.dvmk]=v; }); return {goc:$('#sDvGoc').value.trim(), nk:$('#sDvNK').value.trim(), mk}; }
+function luuODonVi(){ const o=docODonVi(); const bm=BM(); bm.dv=o; ghiLS(BM_KEY,JSON.stringify(bm)); return o; }
+async function taoFileKhoaDV(){
+  const o=luuODonVi(); let goc; try{ goc=VBDC.b64d(o.goc); }catch(e){ goc=null; }
+  if(!goc||goc.length<32){ toast('Mã gốc đơn vị chưa đúng – bấm 🎲 Tạo mã gốc.','warn'); return; }
+  const ds=Object.entries(o.mk); if(!ds.length){ toast('Chưa nhập mật khẩu đơn vị nào.','warn'); return; }
+  const mkXem=BM().mkXem||TT.mkXem||'';
+  for(const [ma,mk] of ds){ if(mk.length<8){ toast(`Mật khẩu ${esc(ma)} cần ít nhất 8 ký tự.`,'warn'); return; } if(mk===mkXem){ toast(`Mật khẩu ${esc(ma)} trùng mật khẩu xem của lãnh đạo.`,'warn'); return; } }
+  if(new Set(ds.map(x=>x[1])).size!==ds.length){ toast('Có 2 đơn vị trùng mật khẩu – mỗi đơn vị phải khác nhau.','warn'); return; }
+  const thieu=VBDC.DS_DON_VI.filter(ma=>!o.mk[ma]); if(thieu.length&&!confirm(`Các đơn vị chưa có mật khẩu (sẽ không đăng nhập được): ${thieu.join(', ')}.\n\nVẫn tạo file?`)) return;
+  const dr=TT.cauHinh||cauHinhCucBo(); if(!dr&&!confirm('Chưa có cấu hình Google Drive – đơn vị sẽ không xem được kết quả, thứ hạng. Vẫn tạo file?')) return;
+  const db=cfgDB(); if((!db||!o.nk)&&!confirm('Chưa có mã nhật ký hoặc chưa cấu hình đồng bộ Google Sheet – sẽ không ghi được nhật ký đăng nhập của đơn vị. Vẫn tạo file?')) return;
+  loading(true,'Đang khóa thông tin cho từng đơn vị…');
+  try{ const salt=crypto.getRandomValues(new Uint8Array(16)); const chung=await VBDC.khoaTuGoc(o.goc,'__chung'); const ra=[];
+    for(const [ma,mk] of ds){ const k=await khoaTuMK(mk,salt,LAP); const iv=crypto.getRandomValues(new Uint8Array(12));
+      const du={ma, ten:VBDC.TEN_DV[ma]||ma, khoa:await VBDC.khoaTuGoc(o.goc,ma), chung, drive:dr?{link:dr.link,khoa:dr.khoa}:null, nhatKy:db&&o.nk?{url:db.url,ma:o.nk}:null};
+      const ct=await crypto.subtle.encrypt({name:'AES-GCM',iv},k,new TextEncoder().encode(JSON.stringify(du))); ra.push({iv:b64e(iv),du:b64e(ct)}); }
+    for(let i=ra.length-1;i>0;i--){ const j=crypto.getRandomValues(new Uint32Array(1))[0]%(i+1); [ra[i],ra[j]]=[ra[j],ra[i]]; }
+    taiXuong(new Blob([JSON.stringify({phien_ban:1,kdf:'PBKDF2-SHA256',lap:LAP,salt:b64e(salt),ds:ra,ghiChu:'Thông tin đăng nhập của các đơn vị – mỗi mục chỉ mở được bằng mật khẩu của đơn vị đó'},null,1)],{type:'application/json'}),'khoa_don_vi.json');
+    toast(`Đã tạo <b>khoa_don_vi.json</b> cho ${ds.length} đơn vị – tải lên GitHub (thư mục gốc của kho) thay file cũ.`,'ok',10000); }
+  catch(e){ toast('Lỗi: '+esc(e.message),'err'); } finally{ loading(false); }
+}
+function inPhieuMK(){ const o=luuODonVi(); const link=location.href.split(/[?#]/)[0].replace(/index\.html$/,'');
+  const ds=VBDC.DS_DON_VI.filter(ma=>o.mk[ma]); if(!ds.length){ toast('Chưa có mật khẩu đơn vị.','warn'); return; }
+  VBDC.inTrang('Phiếu giao mật khẩu đơn vị',ds.map((ma,i)=>`<div style="${i?'page-break-before:always;':''}border:2px solid #0b3270;border-radius:12px;padding:24px 28px;margin:10px 0"><div style="font-size:12pt;color:#555">CỤC THUẾ · ${esc(TEN_CQ.toUpperCase())}</div>
+    <h2 style="margin:8px 0 14px;font-size:18pt">PHIẾU GIAO MẬT KHẨU – APP BÁO CÁO ĐIỀU HÀNH</h2><p style="font-size:14pt">Đơn vị: <b>${esc(VBDC.TEN_DV[ma]||ma)}</b></p>
+    <p style="font-size:13pt">Địa chỉ app: <b>${esc(link)}</b></p><p style="font-size:16pt">Mật khẩu: <b style="font-family:Consolas,monospace;letter-spacing:.06em">${esc(o.mk[ma])}</b></p>
+    <ul style="font-size:12pt;line-height:1.6"><li>Mật khẩu chỉ mở được số liệu, thứ hạng, văn bản, lịch họp của đơn vị mình.</li><li>Không chia sẻ mật khẩu ra ngoài đơn vị. Mỗi lần đăng nhập được ghi nhật ký.</li><li>Máy dùng chung: bỏ chọn “Nhớ trên máy này”, dùng xong bấm 🔒 Khóa app.</li></ul></div>`).join('')); }
+function chepO(id){ const i=$('#'+id); if(i&&i.value) VBDC.saoChep(i.value).then(ok=>toast(ok?'Đã sao chép.':'Không sao chép được – hãy chọn ô và Ctrl+C.',ok?'ok':'warn')); }
+
+/* ---------- Nhật ký đăng nhập, sử dụng ---------- */
+const NK={hang:[], hen:null, phien:Math.random().toString(36).slice(2,8).toUpperCase(), phCu:null};
+function thietBi(){ let id=docLS(TB_KEY); if(!id){ id=Math.random().toString(36).slice(2,8).toUpperCase(); ghiLS(TB_KEY,id); } return id; }
+function trinhDuyet(){ const u=navigator.userAgent; const hd=/Android/.test(u)?'Android':/iPhone|iPad/.test(u)?'iPhone/iPad':/Windows/.test(u)?'Windows':/Mac OS/.test(u)?'Mac':/Linux/.test(u)?'Linux':'Khác';
+  const td=/Zalo/i.test(u)?'Zalo':/Edg\//.test(u)?'Edge':/coc_coc|CocCoc/i.test(u)?'Cốc Cốc':/Firefox\//.test(u)?'Firefox':/Chrome\//.test(u)?'Chrome':/Safari\//.test(u)?'Safari':'Khác'; return hd+' · '+td; }
+function cfgNK(){ if(laDV()) return VAI.nhatKy&&VAI.nhatKy.url&&VAI.nhatKy.ma?VAI.nhatKy:null; const c=cfgDB(); return c?{url:c.url,ma:c.ma}:null; }
+function ghiNK(hd,ct){ try{ if(!/^https?:$/.test(location.protocol)||CONG.khoa) return; const c=cfgNK(); if(!c||!/^https:\/\/script\.google(usercontent)?\.com\//.test(c.url)) return;
+    NK.hang.push({luc:new Date().toISOString(), vai:laDV()?'Đơn vị':'Lãnh đạo', dv:laDV()?(VAI.ten||VAI.ma):'', hd, ct:String(ct||'').slice(0,300), tb:thietBi(), td:trinhDuyet(), ph:NK.phien});
+    clearTimeout(NK.hen); NK.hen=setTimeout(()=>guiNK(false),3000); }catch(e){} }
+function guiNK(beacon){ const c=cfgNK(); if(!c||!NK.hang.length) return; const body=JSON.stringify({ma:c.ma, loai:'nhatky', du:NK.hang.splice(0,50)});
+  try{ if(beacon&&navigator.sendBeacon&&navigator.sendBeacon(c.url,new Blob([body],{type:'text/plain;charset=utf-8'}))) return; }catch(e){}
+  fetch(c.url,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body,keepalive:true}).catch(()=>{}); }
+document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='hidden') guiNK(true); });
+window.addEventListener('pagehide',()=>guiNK(true));
+document.addEventListener('click',e=>{ const a=e.target.closest('a[href^="van-ban-den.html"]'); if(a){ ghiNK('Mở Văn bản đến',a.getAttribute('href')); guiNK(true); } },true);
+function dangNhapXong(){ const s=docJSON(MK_SAI_KEY,{n:0}); xoaLS(MK_SAI_KEY);
+  ghiNK('Đăng nhập',(CONG.tuDong?'tự đăng nhập (mật khẩu đã nhớ)':'nhập mật khẩu')+(s.n?` · trước đó nhập sai ${s.n} lần (lần cuối ${fmtLuc(s.luc)})`:'')); }
+const TEN_PHAN_NK={home:'Trang chủ',ns:'1. Thu NSNN',cd:'2. Chiến dịch 03, 06',hl:'3. Hài lòng NNT',ktn:'4. KT trụ sở NNT',ktc:'5. KT trụ sở CQT',no:'6. Nợ thuế',dv:'7. Tổng hợp / kết quả đơn vị',tt:'9. Thông tin truyền thông'};
+/* Xem nhật ký (lãnh đạo, có đồng bộ Google Sheet) */
+const NKX={ds:[], dv:'', hd:'', ngay:'7', q:''};
+async function moNhatKy(){
+  if(laDV()) return; if(!cfgDB()){ toast('Cần cấu hình <b>đồng bộ Google Sheet</b> (⚙ Cài đặt) để ghi và xem nhật ký.','warn',8000); return; }
+  loading(true,'Đang tải nhật ký…'); try{ const j=await goiDB('doc_nhatky'); NKX.ds=(j.nhat_ky||[]).slice().reverse(); }
+  catch(e){ toast('Không đọc được nhật ký: '+esc(e.message)+' (cần dán Apps Script bản mới).','err',9000); return; } finally{ loading(false); }
+  let m=$('#mNK'); if(!m){ m=document.createElement('div'); m.id='mNK'; m.className='modal'; m.innerHTML='<div class="box"></div>'; document.body.appendChild(m);
+    m.addEventListener('click',e=>{ if(e.target===m||e.target.closest('[data-close]')){ m.classList.add('hidden'); return; } const b=e.target.closest('button'); if(!b) return;
+      if(b.dataset.nkdv!=null){ NKX.dv=NKX.dv===b.dataset.nkdv?'':b.dataset.nkdv; veNhatKy(); } else if(b.hasAttribute('data-nkxl')) xuatNhatKy(); else if(b.hasAttribute('data-nklai')){ m.classList.add('hidden'); moNhatKy(); } });
+    m.addEventListener('change',e=>{ const t=e.target; if(t.dataset.nk){ NKX[t.dataset.nk]=t.value; veNhatKy(); } });
+    m.addEventListener('input',e=>{ if(e.target.dataset.nkq!=null){ NKX.q=e.target.value; clearTimeout(m._h); m._h=setTimeout(()=>{ const p=e.target.selectionStart; veNhatKy(); const i=$('#mNK [data-nkq]'); if(i){ i.focus(); try{ i.setSelectionRange(p,p); }catch(_){} } },300); } }); }
+  veNhatKy(); m.classList.remove('hidden'); ghiNK('Xem nhật ký','');
+}
+function locNK(){ const tu=NKX.ngay==='all'?0:Date.now()-(+NKX.ngay)*86400000; const q=norm(NKX.q);
+  return NKX.ds.filter(r=>{ const t=Date.parse(r.luc)||0; if(t<tu) return false; const dv=r.vai==='Lãnh đạo'?'Lãnh đạo':r.dv; if(NKX.dv&&dv!==NKX.dv) return false; if(NKX.hd&&r.hd!==NKX.hd) return false; if(q&&norm([r.dv,r.hd,r.ct,r.tb,r.td].join(' ')).indexOf(q)<0) return false; return true; }); }
+function veNhatKy(){
+  const ds=locNK(); const tu7=Date.now()-7*86400000;
+  const nhom=[{ten:'Lãnh đạo'},...VBDC.DS_DON_VI.map(ma=>({ten:VBDC.TEN_DV[ma]||ma}))].map(o=>{ const r=NKX.ds.filter(x=>(x.vai==='Lãnh đạo'?'Lãnh đạo':x.dv)===o.ten);
+    return Object.assign(o,{dn7:r.filter(x=>x.hd==='Đăng nhập'&&Date.parse(x.luc)>=tu7).length, tt7:r.filter(x=>Date.parse(x.luc)>=tu7).length, cuoi:r.length?r[0].luc:'', tb:new Set(r.map(x=>x.tb)).size, sai:r.filter(x=>/nhập sai/.test(x.ct)).length}); });
+  const hds=[...new Set(NKX.ds.map(r=>r.hd))].sort();
+  $('#mNK .box').innerHTML=`<div class="box-h"><h2>📜 Nhật ký đăng nhập, sử dụng</h2><button class="btn icon ghost" data-close>✕</button></div><div class="box-b">
+    <p class="muted" style="margin:0 0 10px;font-size:12.5px">Ghi tự động mỗi lần đăng nhập, mở phần, xuất, chia sẻ, phân công, chỉ đạo (trang <b>NhatKy</b> của Google Sheet). “Thiết bị” là mã ngẫu nhiên của từng trình duyệt, giúp nhận ra máy lạ. Bấm một dòng ở bảng dưới để lọc theo đơn vị.</p>
+    <div class="table-wrap" style="max-height:300px;overflow:auto"><table class="rpt ke"><thead><tr><th>Đơn vị</th><th>Đăng nhập 7 ngày</th><th>Thao tác 7 ngày</th><th>Lần gần nhất</th><th>Số thiết bị</th><th>Có nhập sai trước khi vào</th></tr></thead><tbody>${nhom.map(o=>`<tr class="${NKX.dv===o.ten?'total':''}"><td class="dv"><button class="btn sm" data-nkdv="${esc(o.ten)}">${esc(o.ten)}</button></td><td class="c">${o.dn7||'–'}</td><td class="c">${o.tt7||'–'}</td><td class="c">${o.cuoi?esc(fmtLuc(o.cuoi)):'<span style="color:var(--warn)">Chưa đăng nhập</span>'}</td><td class="c">${o.tb||'–'}</td><td class="c">${o.sai?`<span style="color:var(--bad)">${o.sai} lần</span>`:'–'}</td></tr>`).join('')}</tbody></table></div>
+    <div class="tt-loc" style="margin-top:12px"><input type="search" data-nkq placeholder="🔍 Tìm thiết bị, chi tiết…" value="${esc(NKX.q)}"><select data-nk="ngay">${[['1','24 giờ qua'],['7','7 ngày'],['30','30 ngày'],['all','Tất cả']].map(([v,t])=>`<option value="${v}"${NKX.ngay===v?' selected':''}>${t}</option>`).join('')}</select>
+      <select data-nk="hd"><option value="">Hành động: tất cả</option>${hds.map(h=>`<option${NKX.hd===h?' selected':''}>${esc(h)}</option>`).join('')}</select>${NKX.dv?`<span class="tag" style="background:var(--primary-soft);color:var(--primary)">Đơn vị: ${esc(NKX.dv)}</span>`:''}<button class="btn sm" data-nkxl>📊 Excel</button><button class="btn sm" data-nklai>↻ Tải lại</button></div>
+    <div class="table-wrap" style="max-height:420px;overflow:auto"><table class="rpt ke"><thead><tr><th>Thời gian</th><th>Vai trò, đơn vị</th><th>Hành động</th><th>Chi tiết</th><th>Thiết bị</th></tr></thead><tbody>${ds.slice(0,400).map(r=>`<tr><td class="c">${esc(fmtLuc(r.luc))}</td><td>${esc(r.vai==='Lãnh đạo'?'Lãnh đạo':r.dv)}</td><td>${r.hd==='Đăng nhập'?tag('info','Đăng nhập'):esc(r.hd)}</td><td class="wrap">${esc(r.ct)}</td><td class="wrap" style="min-width:140px">#${esc(r.tb)} · ${esc(r.td)}</td></tr>`).join('')||'<tr><td colspan="5" class="na">Không có dòng nào.</td></tr>'}</tbody></table></div>
+    <p class="muted" style="font-size:12px;margin:6px 0 0">${fmtNum(ds.length)} dòng${ds.length>400?' – hiện 400 dòng mới nhất, tải Excel để xem đủ':''}.</p></div>`;
+}
+function xuatNhatKy(){ const ds=locNK(); const ws=XLSX.utils.aoa_to_sheet([['Thời gian','Vai trò','Đơn vị','Hành động','Chi tiết','Thiết bị','Trình duyệt','Phiên'],...ds.map(r=>[fmtLuc(r.luc),r.vai,r.dv,r.hd,r.ct,r.tb,r.td,r.ph])]);
+  const wb=XLSX.utils.book_new(); XLSX.utils.book_append_sheet(wb,ws,'Nhat_ky'); XLSX.writeFile(wb,'Nhat_ky_dang_nhap_'+todayIso()+'.xlsx'); }
 
 /* =====================================================================
    PHẦN 15. GẮN SỰ KIỆN & KHỞI ĐỘNG
@@ -4625,9 +4871,9 @@ function ganSuKien(){
   document.addEventListener('click',()=>$('#menuExport').classList.add('hidden'));
   document.addEventListener('click',e=>{ const m=$('#menuCot'); if(m&&!e.target.closest('[data-cot]')) m.classList.add('hidden'); });
   window.addEventListener('scroll',()=>datViTriMenuCot(),{passive:true});
-  const act=a=>({pdf:xuatPDF,excel:xuatExcel,share:quaQT(xuatBanChiaSe),backup:quaQT(saoLuu),drive:quaQT(xuatChoDrive),online:()=>{ if(TT.st){ vaoTrucTuyen(TT.st); render(); taiTuDrive(true); } },restore:quaQT(()=>$('#restoreFile').click()),
+  const act=a=>({pdf:xuatPDF,excel:xuatExcel,share:quaQT(xuatBanChiaSe),backup:quaQT(saoLuu),drive:quaQT(xuatChoDrive),dvkq:quaQT(xuatKQDonVi),nhatky:moNhatKy,online:()=>{ if(TT.st){ vaoTrucTuyen(TT.st); render(); taiTuDrive(true); } },restore:quaQT(()=>$('#restoreFile').click()),
     print:async()=>{ const old=document.documentElement.dataset.theme; document.documentElement.dataset.theme='light'; render(); await sleep(400); window.print(); document.documentElement.dataset.theme=old; render(); }}[a]||(()=>{}))();
-  $('#menuExport').onclick=e=>{ const b=e.target.closest('[data-act]'); if(b) act(b.dataset.act); };
+  $('#menuExport').onclick=e=>{ const b=e.target.closest('[data-act]'); if(b){ if(b.dataset.act!=='nhatky') ghiNK('Xuất / thao tác',b.textContent.trim()); act(b.dataset.act); } };
   $('#fabPhan').innerHTML=ICON.luoi; $('#fabPhan').onclick=moBangPhan;
   $('#parts').onclick=e=>{ const b=e.target.closest('[data-phan]'); if(!b) return; D().ui.phan=b.dataset.phan; luuUI(); render(); window.scrollTo({top:0}); };
   $('#selKy').onchange=e=>{ D().ui.ky[D().ui.phan]=e.target.value; luuUI(); render(); };
@@ -4693,12 +4939,20 @@ function ganSuKien(){
       const cu=docLS(DB_KEY); ghiJSON(DB_KEY,{url,ma}); toast('Đang thử kết nối Google Sheet…');
       goiDB('doc').then(j=>{ toast(`✅ Kết nối được: ${(j.lich_hop||[]).length} dòng lịch họp, ${(j.chi_dao||[]).length} chỉ đạo, ${(j.lanh_dao||[]).length} lãnh đạo.`,'ok',8000); if(b.id==='sDbLuu'){ docDB(true); moCaiDat(); } else { if(cu) ghiLS(DB_KEY,cu); else xoaLS(DB_KEY); } })
         .catch(e=>{ if(cu) ghiLS(DB_KEY,cu); else xoaLS(DB_KEY); toast('❌ '+esc(e.message),'err',9000); }); }
+    else if(b.id==='sDvTaoGoc'){ if($('#sDvGoc').value&&!confirm('Đổi mã gốc: phải đặt lại secret MA_GOC_DON_VI trên GitHub, tạo lại khoa_don_vi.json, cau_hinh.json và xuất lại kết quả đơn vị. Tiếp tục?')) return; $('#sDvGoc').value=taoMaNgauNhien(32); luuODonVi(); toast('Đã tạo mã gốc – bấm 📋 Sao chép mã gốc rồi dán vào GitHub secret MA_GOC_DON_VI.','ok',8000); }
+    else if(b.id==='sDvTaoNK'){ $('#sDvNK').value=taoMaNgauNhien(24).replace(/[^A-Za-z0-9]/g,'x'); luuODonVi(); toast('Đã tạo mã nhật ký – dán vào Apps Script (thuộc tính MA_NHAT_KY).','ok',7000); }
+    else if(b.dataset.dvchep){ chepO(b.dataset.dvchep); }
+    else if(b.dataset.dvtao){ const i=$(`[data-dvmk="${b.dataset.dvtao}"]`); if(i&&(!i.value||confirm('Thay mật khẩu đang có của đơn vị này?'))) i.value=taoMKDonVi(b.dataset.dvtao); }
+    else if(b.id==='sDvTaoHet'){ $$('[data-dvmk]').forEach(i=>{ if(!i.value.trim()) i.value=taoMKDonVi(i.dataset.dvmk); }); luuODonVi(); toast('Đã tạo mật khẩu cho các ô trống và lưu trên máy này.','ok'); }
+    else if(b.id==='sDvLuu'){ luuODonVi(); toast('Đã lưu mã gốc, mã nhật ký, mật khẩu đơn vị trên máy này.','ok'); }
+    else if(b.id==='sDvFile'){ taoFileKhoaDV(); }
+    else if(b.id==='sDvIn'){ inPhieuMK(); }
     else if(b.id==='sDbXoa'){ xoaLS(DB_KEY); DB.du=null; moCaiDat(); toast('Đã bỏ cấu hình đồng bộ trên máy này.'); }
     else if(b.id==='sDriveFile'){ const c=cauHinhTuO(); if(!c) return; (async()=>{
         const mkXem=$('#sMkXem').value, mkQT=$('#sMkQT').value; let qt=BM().qt||TT.qt||null;
         if(mkQT){ if(mkQT.length<8){ toast('Mật khẩu quản trị cần ít nhất 8 ký tự.','warn'); return; } qt=await bamMK(mkQT); }
         if(!qt&&!confirm('Chưa có MẬT KHẨU QUẢN TRỊ – ai mở trang cũng vào được Cài đặt, Nhập số liệu. Vẫn tạo file?')) return;
-        const o=Object.assign({},c,qt?{qt}:{}); let out; { const url=$('#sDbUrl').value.trim(), ma=$('#sDbMa').value.trim(); if(url&&ma) o.dongBo={url,ma}; }
+        const o=Object.assign({},c,qt?{qt}:{}); let out; { const url=$('#sDbUrl').value.trim(), ma=$('#sDbMa').value.trim(); if(url&&ma) o.dongBo={url,ma}; const g=($('#sDvGoc')||{}).value; if(g&&g.trim()) o.dvGoc=g.trim(); }
         if(mkXem){ if(mkXem.length<8){ toast('Mật khẩu xem cần ít nhất 8 ký tự.','warn'); return; } loading(true,'Đang khóa cấu hình…'); try{ out=await maHoa(JSON.stringify(o),mkXem); }finally{ loading(false); } }
         else { if(!confirm('Chưa có MẬT KHẨU XEM – file cau_hinh.json sẽ KHÔNG khóa, ai cũng đọc được link Drive và khóa API. Vẫn tạo file?')) return; out=o; }
         taiXuong(new Blob([JSON.stringify(out,null,2)],{type:'application/json'}),'cau_hinh.json');
@@ -4728,7 +4982,9 @@ document.addEventListener('DOMContentLoaded',()=>{
   ganSuKienDV(); ganSuKienTT();
   khoiDongCong().then(()=>{   // qua web: chỉ chạy tiếp khi đã nhập đúng mật khẩu xem
     $('#btnKhoa').classList.toggle('hidden',!CONG.coMK);
+    if(laDV()){ batDauDonVi(); dangNhapXong(); return; }
     try{ render(); }catch(e){ console.error(e); toast('Lỗi hiển thị: '+esc(e.message),'err'); }
+    setTimeout(dangNhapXong,1500);   // đợi đọc xong cấu hình (địa chỉ ghi nhật ký)
     batDauTrucTuyen(true).catch(e=>console.warn(e));   // nếu có cấu hình Google Drive: tự đọc số liệu trực tuyến
     if(CO_VBD){ taiVBD(); taiTin(); } capNutHop();
   });

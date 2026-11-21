@@ -9,6 +9,7 @@
 import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { pbkdf2Sync, randomBytes, createCipheriv, createDecipheriv } from 'node:crypto';
+import { DS_DON_VI, dvLienQuan, layGoc, khoaDonVi, ghiNeuDoi } from './don-vi.mjs';
 
 const LAP = 250000, SO_NGAY = Number(process.env.SO_NGAY_TIN || 60), TOI_DA = 4000;
 const [, , ra] = process.argv;
@@ -76,6 +77,20 @@ tin.forEach(t => { let h = 0; for (const c of t.link) h = (h * 31 + c.charCodeAt
 const lichHop = hop.filter(o => { const n = ngayISO(gt(o, 'Ngày họp')); return !n || n >= truNgay(homNay, 90); });
 const du = { phien_ban: 1, nguon: 'Google Sheet "Bản tin nhanh"', so_ngay: SO_NGAY, tin, lanh_dao: ld, lich_hop: lichHop, chi_dao: cd };
 console.log(`Tin ${SO_NGAY} ngày: ${tin.length} (có đánh giá: ${tin.filter(t => t.tom_tat).length}) · lãnh đạo: ${ld.length} · lịch họp: ${lichHop.length} · chỉ đạo: ${cd.length}`);
+
+/* ---------- gói cho từng đơn vị (mật khẩu đơn vị): tin chung + lịch họp, chỉ đạo liên quan đơn vị; không gồm danh sách lãnh đạo ---------- */
+const goc = layGoc();
+if (goc) {
+  const thuMuc = join(ra, '..', 'don-vi'); let n = 0;
+  if (ghiNeuDoi(join(thuMuc, 'chung.tin.json'), { phien_ban: 1, so_ngay: SO_NGAY, tin }, khoaDonVi(goc, '__chung'))) n++;
+  const lq = (o, ...cot) => { const s = new Set(); cot.forEach(c => dvLienQuan(gt(o, c)).forEach(x => s.add(x))); return s; };
+  for (const ma of DS_DON_VI) {
+    const h = lichHop.filter(o => lq(o, 'Phòng chủ trì', 'Đơn vị chuẩn bị (app)', 'Thành phần tham gia', 'Đã xác nhận tham gia').has(ma));
+    const c = cd.filter(o => lq(o, 'Đơn vị chủ trì', 'Đơn vị phối hợp').has(ma));
+    if (ghiNeuDoi(join(thuMuc, ma + '.tin.json'), { phien_ban: 1, don_vi: ma, lich_hop: h, chi_dao: c }, khoaDonVi(goc, ma))) n++;
+  }
+  console.log(`Gói đơn vị: ${n ? 'đã ghi ' + n + ' tệp' : 'không đổi'}`);
+} else console.log('Chưa đặt MA_GOC_DON_VI – bỏ qua gói cho đơn vị.');
 
 /* ---------- khóa, ghi ---------- */
 const khoa = salt => pbkdf2Sync(Buffer.from(mk, 'utf8'), salt, LAP, 32, 'sha256');

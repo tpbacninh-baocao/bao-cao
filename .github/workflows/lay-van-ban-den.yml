@@ -41,12 +41,18 @@ jobs:
           MAT_KHAU_XEM: ${{ secrets.MAT_KHAU_XEM }}
         run: node cong-cu/ma-hoa-van-ban-den.mjs "$RUNNER_TEMP/van-ban-den.json" van-ban-den.mahoa.json
 
+      - name: Gói văn bản cho từng đơn vị (mật khẩu đơn vị)
+        env:
+          MA_GOC_DON_VI: ${{ secrets.MA_GOC_DON_VI }}
+        run: node cong-cu/goi-van-ban-don-vi.mjs "$RUNNER_TEMP/van-ban-den.json" don-vi
+
       - name: Lưu vào kho nếu có thay đổi
         run: |
           set -euo pipefail
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add van-ban-den.mahoa.json
+          if [ -d don-vi ]; then git add don-vi; fi
           if git diff --cached --quiet; then echo "Không có thay đổi."; exit 0; fi
           git commit -m "Cập nhật văn bản đến"
           for i in 1 2 3 4; do git pull --rebase -q origin "${GITHUB_REF_NAME}" && git push && exit 0; sleep $((i*3)); done

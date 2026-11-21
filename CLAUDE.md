@@ -22,9 +22,10 @@ dong_goi.py                 đóng gói ra index.html, van-ban-den.html
 thu-vien/                   danh sách thư viện (package.json, package-lock.json)
 huong-dan/                  hướng dẫn sử dụng, cài đặt; huong-dan/tac-vu/ là tệp tác vụ mẫu
 .github/workflows/          dong-goi.yml (tự đóng gói), lay-van-ban-den.yml (lấy văn bản đến), lay-tin-tuc.yml (bản tin)
-cong-cu/                    ma-hoa-van-ban-den.mjs, lay-tin-tuc.mjs (đọc Sheet, khóa), apps-script-dong-bo.gs (dán vào Apps Script của Sheet)
+cong-cu/                    ma-hoa-van-ban-den.mjs, lay-tin-tuc.mjs (đọc Sheet, khóa), apps-script-dong-bo.gs (dán vào Apps Script của Sheet),
+                            don-vi.mjs (danh sách, khóa đơn vị – đọc chính nguon/van_ban_den_chung.js), goi-van-ban-don-vi.mjs
 index.html, van-ban-den.html   KẾT QUẢ ĐÓNG GÓI – không sửa tay
-cau_hinh.json, van-ban-den.mahoa.json, tin-tuc.mahoa.json   tệp đã khóa – không sửa, không xóa
+cau_hinh.json, van-ban-den.mahoa.json, tin-tuc.mahoa.json, khoa_don_vi.json, don-vi/   tệp đã khóa – không sửa, không xóa
 ```
 - Đóng gói để thử: `cd thu-vien && npm ci --ignore-scripts && cd .. && python dong_goi.py`.
 - Trên GitHub, `dong-goi.yml` tự đóng gói khi `nguon/`, `dong_goi.py` hoặc thư viện đổi.
@@ -35,6 +36,11 @@ cau_hinh.json, van-ban-den.mahoa.json, tin-tuc.mahoa.json   tệp đã khóa –
 - Số liệu báo cáo nằm trên Google Drive, đã khóa bằng mật khẩu xem (AES-GCM 256, PBKDF2-SHA256 250.000 vòng). Mật khẩu quản trị chỉ lưu dạng băm.
 - Không dùng CDN. Không gọi dịch vụ ngoài, trừ Google Drive API đã có.
 - Trang Văn bản đến chỉ mở link Google Drive/Docs; văn bản mật chỉ hiện nhãn.
+
+## Phân quyền (mật khẩu)
+- **Mật khẩu xem** = lãnh đạo (toàn bộ). **Mật khẩu đơn vị** (21 đơn vị, `VBDC.DS_DON_VI`) = chỉ dữ liệu đơn vị mình; không chỉ đạo, phân công, nhập, cài đặt. **Mật khẩu quản trị** = nhập, cài đặt, xuất.
+- Dữ liệu đơn vị khóa bằng khóa riêng = HMAC-SHA256(mã gốc, "bao-cao-don-vi|<MÃ>"); mã gốc ở secret `MA_GOC_DON_VI`, máy quản trị, `cau_hinh.json` (đã khóa). Không bao giờ đưa số liệu đơn vị khác vào gói của một đơn vị (chỉ giá trị của mình + thứ hạng, số đơn vị).
+- Nhật ký đăng nhập, sử dụng: trang NhatKy qua Apps Script (`MA_NHAT_KY` chỉ ghi được nhật ký).
 
 ## Luồng dữ liệu
 - **Số liệu:** nhập Excel trên app → Xuất file cho Drive (đã khóa) → mọi máy đọc từ Drive, tự kiểm tra 5 phút/lần.

@@ -15,6 +15,7 @@
 - **Thanh Tab:** 10 tab một hàng (7 Tổng hợp đơn vị, 8 Văn bản đến, 9 Truyền thông), không đủ chỗ tự dùng tên ngắn.
 - **Lịch họp:** nút 🗓 ở Trang chủ và thanh trên (chấm đỏ = cuộc họp mới, nhấp nháy khi còn ≤ 2 giờ); gộp họp từ văn bản đến + trang LichHop; phân công lãnh đạo dự (Trưởng, Phó Trưởng trang LĐ), đơn vị chủ trì chuẩn bị, phối hợp, chỉ đạo nhanh; ảnh thông báo gửi Zalo/mail; .ics.
 - **Phần 9. Thông tin truyền thông:** tin từ Sheet "Bản tin nhanh" (tác vụ `lay-tin-tuc.yml` 2 giờ/lần, đã khóa); điểm tin, thống kê, lọc; đánh giá của tác vụ AI (trang DanhGia) hoặc phân loại sơ bộ theo từ khóa; nút Chỉ đạo → trang Chidao; ảnh Phiếu chỉ đạo, ảnh Điểm tin.
+- **Mật khẩu đơn vị** (21 phòng, Thuế cơ sở): mỗi đơn vị chỉ thấy kết quả, thứ hạng của mình, văn bản chủ trì/phối hợp, lịch họp, chỉ đạo liên quan, bản tin (không chỉ đạo). **Nhật ký đăng nhập, sử dụng** (⬇ Xuất → 📜).
 - **Đồng bộ Google Sheet** qua Apps Script (`cong-cu/apps-script-dong-bo.gs`): ghi LichHop, Chidao; chưa cài thì lưu trên máy. Phần 7 hiện chỉ đạo, cuộc họp giao đơn vị.
 - **Văn bản đến:** thẻ số bấm để lọc, Danh sách, Điều hành nhanh, Báo cáo nhanh, Hôm nay cần làm, Lịch họp (có tệp .ics), Lịch hạn, Ma trận ưu tiên, Theo đơn vị, Thống kê; tự kiểm tra 2 phút/lần, báo văn bản mới.
 - Chung: xuất Ảnh, PDF, Excel, bản chia sẻ, sao lưu; thu gọn nội dung dài; giao diện điện thoại; đọc số liệu trực tuyến từ Google Drive.
@@ -24,7 +25,10 @@
 
 - 21/11/2026: Sửa thanh Tab; thêm Lịch họp (phân công, chỉ đạo, ảnh chia sẻ), Phần 9 Thông tin truyền thông, đồng bộ Google Sheet, tác vụ Lấy tin tức, hướng dẫn `HUONG_DAN_DONG_BO_SHEET.md`, `tac-vu/danh-gia-tin-tuc.md`. Tên cơ quan giữ "Thuế thành phố Bắc Ninh" (người dùng chốt lại 21/11/2026); danh sách lãnh đạo phó lấy chức vụ "Phó Trưởng…" ở trang LĐ.
 
+- 21/11/2026: Thêm mật khẩu riêng cho 21 đơn vị (khoa_don_vi.json, thư mục don-vi/, Ket_qua_don_vi.json trên Drive), nhật ký đăng nhập; hướng dẫn `HUONG_DAN_MAT_KHAU_DON_VI.md`.
+
 ## 3. Việc còn lại (người dùng làm trên GitHub)
+- [ ] Làm theo `huong-dan/HUONG_DAN_MAT_KHAU_DON_VI.md`: dán Apps Script mới + `MA_NHAT_KY`; tạo mã gốc, mật khẩu đơn vị; secret `MA_GOC_DON_VI`; tải `khoa_don_vi.json`, `cau_hinh.json`; xuất kết quả đơn vị lên Drive.
 - [ ] Làm theo `huong-dan/HUONG_DAN_DONG_BO_SHEET.md`: secret `SHEET_TIN_TUC_ID`; cài Apps Script, đặt `MA_BI_MAT`; nhập vào ⚙ Cài đặt, tạo lại `cau_hinh.json`.
 - [x] 21/11/2026: đã nối Google Sheets (Composio), tạo trang **DanhGia**, tạo tác vụ đã lên lịch riêng **“Đánh giá tin thuế (Phần 9 – Thông tin truyền thông)”** chạy 7h42, 12h42, 16h42.
 - [ ] **Dán lại `cong-cu/apps-script-dong-bo.gs` vào Apps Script, triển khai Phiên bản mới** (bản sửa 21/11/2026: cột có danh sách thả xuống như Lãnh đạo chủ trì, Phòng chủ trì tự chọn mục khớp, bản đầy đủ ghi cột “Lãnh đạo dự (app)”, “Đơn vị chuẩn bị (app)”).
