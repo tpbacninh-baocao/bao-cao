@@ -30,7 +30,7 @@
 
 - 21/11/2026: Trang chủ chuyển sang nền sáng, màu riêng từng nhiệm vụ (lãnh đạo và đơn vị); trang chủ đơn vị làm lại theo kiểu vòng chức năng, chỉ hiện thứ hạng và tỷ lệ chính; hiệu ứng dùng được trên iPhone, Android (có tiền tố -webkit-, không dùng tính năng mới).
 - 21/11/2026: Ước tính token khi app tự chạy (1 lần đo mỗi tác vụ): đánh giá tin (3 lần/ngày) ≈ 1,6 triệu token/lần; quét văn bản đến (4 lần/ngày) ≈ 2,5 triệu token/lần; tổng ≈ 14–15 triệu token/ngày, phần lớn là đọc lại ngữ cảnh đã lưu (giá rẻ). Các tác vụ GitHub (lấy tin, lấy văn bản, đóng gói) và app trên trình duyệt không tốn token.
-- 21/11/2026: Giảm chi phí tác vụ AI: đánh giá tin chuyển sang Sonnet, 2 lần/ngày (7:42, 14:42), tối đa 40 tin/lần, thêm yêu cầu tự kiểm tra số hiệu, ngày, con số; quét văn bản đến (Sonnet) bỏ lần 23:40, còn 9:40, 12:40, 16:40. Ước tính còn ≈ 9–10 triệu token/ngày (≈ 3,5–4 USD theo giá công khai). Lịch dự phòng của "Lấy văn bản đến" đổi theo giờ quét mới.
+- 21/11/2026: Giảm chi phí tác vụ AI: đánh giá tin chuyển sang Sonnet, 2 lần/ngày (7:42, 14:42), tối đa 40 tin/lần, thêm yêu cầu tự kiểm tra số hiệu, ngày, con số; quét văn bản đến (Sonnet) bỏ lần 23:40, còn 9:40, 12:40, 16:40. Ước tính còn ≈ 10–11 triệu token/ngày (≈ 5 USD theo giá công khai, trước ≈ 9 USD). Lịch dự phòng của "Lấy văn bản đến" đổi theo giờ quét mới.
 ## 3. Việc còn lại (người dùng làm trên GitHub)
 - [ ] Làm theo `huong-dan/HUONG_DAN_MAT_KHAU_DON_VI.md`: dán Apps Script mới + `MA_NHAT_KY`; tạo mã gốc, mật khẩu đơn vị; secret `MA_GOC_DON_VI`; tải `khoa_don_vi.json`, `cau_hinh.json`; xuất kết quả đơn vị lên Drive.
 - [ ] Làm theo `huong-dan/HUONG_DAN_DONG_BO_SHEET.md`: secret `SHEET_TIN_TUC_ID`; cài Apps Script, đặt `MA_BI_MAT`; nhập vào ⚙ Cài đặt, tạo lại `cau_hinh.json`.
