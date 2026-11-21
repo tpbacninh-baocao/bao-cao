@@ -45,7 +45,7 @@ cau_hinh.json, van-ban-den.mahoa.json, tin-tuc.mahoa.json, khoa_don_vi.json, don
 ## Luồng dữ liệu
 - **Số liệu:** nhập Excel trên app → Xuất file cho Drive (đã khóa) → mọi máy đọc từ Drive, tự kiểm tra 5 phút/lần.
 - **Bản tin, lịch họp, chỉ đạo:** Google Sheet "Bản tin nhanh" (Sheet1, DanhGia, LĐ, LichHop, Chidao) → `lay-tin-tuc.yml` khóa thành `tin-tuc.mahoa.json`. App ghi phân công, chỉ đạo qua Apps Script (địa chỉ + mã trong `cau_hinh.json` đã khóa). Không đưa mã Sheet, link Sheet vào kho.
-- **Văn bản đến:** kho riêng tư `theo-doi-van-ban` tạo `xuat/van-ban-den.json` → tác vụ `lay-van-ban-den.yml` lấy về, khóa thành `van-ban-den.mahoa.json` → trang tự kiểm tra 2 phút/lần.
+- **Văn bản đến:** kho riêng tư `theo-doi-van-ban` tạo `xuat/van-ban-den.json` → tác vụ `lay-van-ban-den.yml` lấy về, khóa thành `van-ban-den.mahoa.json` → trang tự kiểm tra 2 phút/lần. **Kho này KHÔNG quét lại văn bản trên Drive và không dùng AI** cho văn bản đến: chỉ chép kết quả đã quét của `theo-doi-van-ban` (không tốn token). Không thêm bước quét, đọc PDF vào kho này.
 
 ## Quy tắc nghiệp vụ đã chốt
 - Tiền lưu nội bộ theo **triệu đồng**, hiển thị tỷ đồng qua một hàm chung (`tyDong`). Chia cho 0 hiện "–".
