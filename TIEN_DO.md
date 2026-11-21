@@ -3,7 +3,7 @@
 > Kho công khai: chỉ ghi chức năng và quyết định. **Không ghi số liệu thật.**
 
 ## 1. Chức năng đã có
-- **Trang chủ:** 6 biểu tượng, chỉ số chính, nút chuyển phần nhanh ▦, thanh Tab.
+- **Trang chủ:** nền sáng, 6 nhiệm vụ trên vòng tròn, mỗi nhiệm vụ một màu, số chạy khi mở, ô hiện dần; chỉ số chính, nút chuyển phần nhanh ▦, thanh Tab. Trang chủ của đơn vị cùng kiểu: giữa là thứ hạng chung, quanh là từng nhiệm vụ (thứ hạng + tỷ lệ chính), chạm để xem chi tiết.
 - **Cổng mật khẩu** khi mở qua web; mật khẩu xem khóa số liệu; mật khẩu quản trị cho Nhập, Cài đặt, Xuất.
 - **Phần 1. Thu NSNN:** A. theo khoản thu, đơn vị (có Hải quan); B. dự toán 99 xã, phường: bản đồ, tìm xã, top 10, lọc theo Thuế cơ sở, mẫu biểu nhập, **màn hình điều hành toàn màn hình**.
 - **Phần 2.** Chiến dịch làm sạch MST 03, 06.
@@ -25,9 +25,10 @@
 
 - 21/11/2026: Sửa thanh Tab; thêm Lịch họp (phân công, chỉ đạo, ảnh chia sẻ), Phần 9 Thông tin truyền thông, đồng bộ Google Sheet, tác vụ Lấy tin tức, hướng dẫn `HUONG_DAN_DONG_BO_SHEET.md`, `tac-vu/danh-gia-tin-tuc.md`. Tên cơ quan giữ "Thuế thành phố Bắc Ninh" (người dùng chốt lại 21/11/2026); danh sách lãnh đạo phó lấy chức vụ "Phó Trưởng…" ở trang LĐ.
 
-- 22/11/2026: Chế độ đơn vị: ẩn thông tin quản trị (tự kiểm tra, Lấy ngay, hướng dẫn cài đặt); thêm Trung tâm điều hành thu NSNN cho Thuế cơ sở (xã, phường phụ trách) và Phòng CNTK, NVDTPC (toàn bộ); trang chủ đơn vị thiết kế lại (màu theo nhiệm vụ, chữ, số lớn).
+- 21/11/2026: Chế độ đơn vị: ẩn thông tin quản trị (tự kiểm tra, Lấy ngay, hướng dẫn cài đặt); thêm Trung tâm điều hành thu NSNN cho Thuế cơ sở (xã, phường phụ trách) và Phòng CNTK, NVDTPC (toàn bộ); trang chủ đơn vị thiết kế lại (màu theo nhiệm vụ, chữ, số lớn).
 - 21/11/2026: Thêm mật khẩu riêng cho 21 đơn vị (khoa_don_vi.json, thư mục don-vi/, Ket_qua_don_vi.json trên Drive), nhật ký đăng nhập; hướng dẫn `HUONG_DAN_MAT_KHAU_DON_VI.md`.
 
+- 21/11/2026: Trang chủ chuyển sang nền sáng, màu riêng từng nhiệm vụ (lãnh đạo và đơn vị); trang chủ đơn vị làm lại theo kiểu vòng chức năng, chỉ hiện thứ hạng và tỷ lệ chính; hiệu ứng dùng được trên iPhone, Android (có tiền tố -webkit-, không dùng tính năng mới).
 ## 3. Việc còn lại (người dùng làm trên GitHub)
 - [ ] Làm theo `huong-dan/HUONG_DAN_MAT_KHAU_DON_VI.md`: dán Apps Script mới + `MA_NHAT_KY`; tạo mã gốc, mật khẩu đơn vị; secret `MA_GOC_DON_VI`; tải `khoa_don_vi.json`, `cau_hinh.json`; xuất kết quả đơn vị lên Drive.
 - [ ] Làm theo `huong-dan/HUONG_DAN_DONG_BO_SHEET.md`: secret `SHEET_TIN_TUC_ID`; cài Apps Script, đặt `MA_BI_MAT`; nhập vào ⚙ Cài đặt, tạo lại `cau_hinh.json`.
