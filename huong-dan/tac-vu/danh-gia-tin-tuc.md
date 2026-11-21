@@ -2,6 +2,8 @@
 
 Dán **toàn bộ phần trong khung dưới** vào cuối nội dung của tác vụ đã lên lịch (tác vụ đang thu thập tin vào trang `Sheet1` của Google Sheet "Bản tin nhanh"). Tác vụ cần quyền **sửa** Sheet đó.
 
+> Đang dùng (21/11/2026): tác vụ riêng "Đánh giá tin thuế", mô hình **Sonnet**, chạy **2 lần/ngày** (7:42 và 14:42 giờ Việt Nam), tối đa 40 tin mỗi lần. Không cần Opus: việc đọc bài, tóm tắt, phân loại theo mẫu Sonnet làm tốt, tốn khoảng 1/2 so với Opus.
+
 ```
 SAU KHI THU THẬP TIN, ĐÁNH GIÁ NHANH CÁC TIN MỚI
 Vai trò: chuyên viên tổng hợp của cơ quan thuế, tham mưu cho lãnh đạo Thuế (cấp tỉnh, thành phố).

@@ -7,7 +7,7 @@ name: Lấy văn bản đến
 #
 # Chạy khi nào:
 #   1. NGAY LẬP TỨC: kho theo-doi-van-ban gọi sang mỗi khi tệp xuat/van-ban-den.json thay đổi (quét theo lịch
-#      9:40, 12:40, 16:40, 23:40 hoặc quét thủ công, quét gấp) – xem tệp bao-app-dieu-hanh.yml ở kho đó.
+#      9:40, 12:40, 16:40 hoặc quét thủ công, quét gấp) – xem tệp bao-app-dieu-hanh.yml ở kho đó.
 #   2. Quản trị bấm "Run workflow" (mục Actions) khi cần lấy ngay.
 #   3. Lưới an toàn nếu lời gọi bị lỡ: 15 phút sau mỗi lần quét theo lịch, và mỗi giờ trong giờ làm việc.
 #      (GitHub có thể chạy lịch muộn vài phút đến vài chục phút khi đông.)

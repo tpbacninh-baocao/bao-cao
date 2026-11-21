@@ -120,7 +120,7 @@ Lưu ý:
 - Việc khóa Cài đặt bằng mật khẩu quản trị là để người xem không tình cờ thấy hay sửa cấu hình. Quyền **sửa số liệu thật sự** nằm ở tài khoản Google Drive của bạn, vì chỉ bạn ghi đè được file.
 
 ## Bước 7. Văn bản đến cập nhật ngay (khi Sổ theo dõi quét theo lịch hoặc quét gấp)
-Cách làm: mỗi khi kho riêng tư **theo-doi-van-ban** có tệp `xuat/van-ban-den.json` mới (quét 9:40, 12:40, 16:40, 23:40 hoặc quét thủ công), kho đó **gọi ngay** tác vụ "Lấy văn bản đến" của kho trang báo cáo. Khoảng 1–3 phút sau trang Văn bản đến có số mới; trang tự kiểm tra 2 phút/lần và hiện thông báo "🔔 Có n văn bản mới". Tác vụ vẫn tự chạy dự phòng 15 phút sau mỗi lần quét và mỗi giờ trong giờ làm việc.
+Cách làm: mỗi khi kho riêng tư **theo-doi-van-ban** có tệp `xuat/van-ban-den.json` mới (quét 9:40, 12:40, 16:40 hoặc quét thủ công), kho đó **gọi ngay** tác vụ "Lấy văn bản đến" của kho trang báo cáo. Khoảng 1–3 phút sau trang Văn bản đến có số mới; trang tự kiểm tra 2 phút/lần và hiện thông báo "🔔 Có n văn bản mới". Tác vụ vẫn tự chạy dự phòng 15 phút sau mỗi lần quét và mỗi giờ trong giờ làm việc.
 
 Hai tệp đã soạn sẵn trong thư mục `huong-dan/tac-vu/` của kho.
 

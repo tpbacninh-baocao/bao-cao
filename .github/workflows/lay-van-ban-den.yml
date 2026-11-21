@@ -4,9 +4,10 @@ name: Lấy văn bản đến
 # rồi ghi van-ban-den.mahoa.json vào kho này để trang "Văn bản đến" đọc.
 on:
   schedule:
-    - cron: '30 2 * * *'    # 09:30 giờ Việt Nam (sau lần quét 8:45)
-    - cron: '30 10 * * *'   # 17:30 giờ Việt Nam (sau lần quét 16:45)
-    - cron: '30 17 * * *'   # 00:30 giờ Việt Nam (sau lần quét 23:45)
+    # Dự phòng: kho theo-doi-van-ban gọi ngay tác vụ này sau mỗi lần quét (9:40, 12:40, 16:40 giờ Việt Nam)
+    - cron: '10 3 * * *'    # 10:10 giờ Việt Nam
+    - cron: '10 6 * * *'    # 13:10 giờ Việt Nam
+    - cron: '10 10 * * *'   # 17:10 giờ Việt Nam
   workflow_dispatch:
 
 permissions:
