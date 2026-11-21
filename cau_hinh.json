@@ -2,8 +2,8 @@
   "maHoa": "AES-GCM",
   "kdf": "PBKDF2-SHA256",
   "lap": 250000,
-  "salt": "Ot+aK+ghYfP3YC5xhbMPgA==",
-  "iv": "hgIN/SLnSng7kO0E",
-  "du": "i/56lsLG65jq+7ePlXsYVtgtlp4ufPG8hqH27RluF1r4gYdsIT8QHo8yccx63ayBPMOLImarWwufBE5nuaU2nzeT98WbIHdkew+oZsBHU5UY14YWTyRozOHYUJbeCpTzlE/73Y3pmVjuC5VlAt7vw2UhPirrKng7E+SJjCfdjm7lJb+tEs8FQHe/PIB6DRR40LCuwwaaMuqFJepFGYjKzYGqrqpC3H5zjH19G+ifoLg13rbg0G3R9xPaCKBI5G3rwEenn/BndRhe5Rb8jM2jAWBpAWUqCkeJs1eYhPJHktRUQxdMKQG+yWQnBs3tBvWFBS3ZANyPti7D5TWM19LOf3/W9rrs/rHzjpShDeGhdBMabBpARAf2a+xpyeVtQxgYJyBqCB3TBiDfizQGzXwCZq3siuKQQach+BNiakb+UY4w1ZZR4viQivOD0fL5Fin9oYK7Knbfu/hM1lMjYCLkW+Bhsq9y4CXp60gxFwlleaLp2oYv3+qORSNNE8TYcDW+q0UbzjQ+ZQdgSXQsIJaVh7b4MXoAO7YXXkY8hDtGODLLlS6tcQTvxZZJpwUV",
+  "salt": "h0y1h7khK/6ZYO53f5ygyg==",
+  "iv": "v1yrCWhMGU53+Quw",
+  "du": "g9Og8aykfae6CjE+F81pnMNu6+Of9v6GXFSvl4FxGcO5DiTub+fxyKb08tR70xtmvgQpDoKkLJnp4gYM4KkbtPpV8cdFhr2ebTg35Qr6oAMCWRm0SNHN2WuyZu9+7pXwGWVpygUMEyK33cLyNey4w9GmVrJzD1QfcpwdKpQhsb/Jec4CrCTGUgPknATguDeBWpuHzJEv5pVNm+Vkh9EwWdjHTFSNWuux+hNTmPSmxM2ulgeprtBh5qvgky0QwjrEKracGczq45LOgHO+82R5jKMEkaqD+zwP2VK/LUtO+Y4zGb0ThkhJuKo6OyDoVVJLpgCIPFgsUlk9HTcPolJ9Asr+leUGIfjqWOWMXQVgaac3Oewtyt3BrTmYNf/y/1kQ11Xtid0MiPm8yK6gn0yG22PJSycdW4XbORrhVRolHN39E9M9KwAlK6c8qAtqf3QQkprIh6rW7SZjd6sWqa+tyW9MwzI/V30q2ZrScfmjEGdGFDxK243aAADkrAV1p3U1n8CaPh0Q5zwC5QUK1Cnei7/zaoTFoEPxydED7eSmPfPEV8xq8Wk3+lbzZZyM62vM+QQvlnmB9nVVlLh5bDHynOj4UDA9sXtosvglVuiBv+sKFVC4N0E5nd43hvOfXfV5+57IMg==",
   "ghiChu": "Số liệu đã khóa bằng mật khẩu – chỉ mở được bằng app Báo cáo điều hành"
 }
