@@ -33,6 +33,7 @@
 - 21/11/2026: Giảm chi phí tác vụ AI: đánh giá tin chuyển sang Sonnet, 2 lần/ngày (7:42, 14:42), tối đa 40 tin/lần, thêm yêu cầu tự kiểm tra số hiệu, ngày, con số; quét văn bản đến (Sonnet) bỏ lần 23:40, còn 9:40, 12:40, 16:40. Ước tính còn ≈ 10–11 triệu token/ngày (≈ 5 USD theo giá công khai, trước ≈ 9 USD). Lịch dự phòng của "Lấy văn bản đến" đổi theo giờ quét mới.
 - 21/11/2026: Làm rõ: app chỉ chép kết quả quét văn bản đến của kho `theo-doi-van-ban` (tác vụ GitHub, không AI, không tốn token); không quét lại Drive. Việc quét chỉ có 1 nơi là tác vụ "Quét văn bản đến".
 - 21/11/2026: Soạn lời dặn mới cho tác vụ "Viết bài báo về thuế" (ngoài app): lấy chủ đề từ trang DanhGia thay vì đọc lại từng bài. Tác vụ chạy trên máy tính của người dùng nên người dùng phải tự dán lời dặn trên máy đó.
+- 22/11/2026: Sửa tên đơn vị bị co "…" ở Phần 7 (do trùng tên kiểu thứ hạng của trang chủ đơn vị): tên đơn vị xuống dòng, điện thoại dọc đưa thứ hạng lên dòng trên; rà soát toàn app ở 3 khổ (máy tính, điện thoại ngang, dọc): Lịch họp, Văn bản đến (Điều hành nhanh, thanh theo đơn vị) không còn cắt tên; biểu đồ hiện đủ tên đơn vị.
 ## 3. Việc còn lại (người dùng làm trên GitHub)
 - [ ] Làm theo `huong-dan/HUONG_DAN_MAT_KHAU_DON_VI.md`: dán Apps Script mới + `MA_NHAT_KY`; tạo mã gốc, mật khẩu đơn vị; secret `MA_GOC_DON_VI`; tải `khoa_don_vi.json`, `cau_hinh.json`; xuất kết quả đơn vị lên Drive.
 - [ ] Làm theo `huong-dan/HUONG_DAN_DONG_BO_SHEET.md`: secret `SHEET_TIN_TUC_ID`; cài Apps Script, đặt `MA_BI_MAT`; nhập vào ⚙ Cài đặt, tạo lại `cau_hinh.json`.

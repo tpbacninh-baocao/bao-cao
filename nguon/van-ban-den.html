@@ -123,7 +123,7 @@ h2.ngay:first-child{margin-top:0}
 .thanh{display:flex;flex-direction:column;gap:6px}
 .thanh button{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 8px;align-items:center;border:0;background:none;padding:3px 2px;cursor:pointer;text-align:left;border-radius:8px;font-size:13px}
 .thanh button:hover{background:var(--primary-soft)}
-.thanh button span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.thanh button span{overflow-wrap:anywhere;line-height:1.3}
 .thanh button b{font-variant-numeric:tabular-nums}
 .thanh button u{grid-column:1/-1;height:6px;border-radius:4px;background:var(--card2);overflow:hidden;text-decoration:none}
 .thanh button u i{display:block;height:100%;border-radius:4px;background:var(--c,var(--primary))}
@@ -257,7 +257,7 @@ table.bang td.do{color:var(--bad);font-weight:800}table.bang td.vang{color:var(-
 .viec{display:block;width:100%;text-align:left;border:0;border-left:3px solid var(--primary);background:var(--card2);border-radius:7px;padding:4px 6px;font-size:12px;line-height:1.3;cursor:pointer}
 .viec:hover{background:var(--primary-soft)}
 .viec.qua{border-left-color:var(--bad)}.viec.han{border-left-color:var(--cam)}.viec.nb{border-left-color:var(--warn)}.viec.hop,.viec.cbhop{border-left-color:var(--xanh)}.viec.bd{border-left-color:var(--good)}
-.viec b{display:block;font-size:11.5px}.viec span{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;color:var(--muted)}
+.viec b{display:block;font-size:11.5px}.viec span{display:block;color:var(--muted);overflow-wrap:anywhere}
 .top-ds{display:flex;flex-direction:column;gap:6px}
 .top-ds button{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:8px;align-items:start;text-align:left;border:1px solid var(--border);background:var(--card);border-radius:10px;padding:7px 10px;cursor:pointer}
 .top-ds button:hover{border-color:var(--primary)}
