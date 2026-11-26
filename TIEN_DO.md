@@ -13,7 +13,7 @@
 - **Phần 6.** Công tác nợ, đánh giá theo mục tiêu Cục Thuế (8%, 5%).
 - **Phần 7.** Tổng hợp đơn vị: sơ đồ bộ máy, chi tiết đơn vị, nhiệm vụ từ văn bản đến, lịch tuần.
 - **Thanh Tab:** 10 tab một hàng (7 Tổng hợp đơn vị, 8 Văn bản đến, 9 Truyền thông), không đủ chỗ tự dùng tên ngắn.
-- **Lịch họp:** nút 🗓 ở Trang chủ và thanh trên (chấm đỏ = cuộc họp mới, nhấp nháy khi còn ≤ 2 giờ); gộp họp từ văn bản đến + trang LichHop; phân công lãnh đạo dự (Trưởng, Phó Trưởng trang LĐ), đơn vị chủ trì chuẩn bị, phối hợp, chỉ đạo nhanh; ảnh thông báo gửi Zalo/mail; .ics.
+- **Lịch họp:** soạn nhanh Thông báo / Giấy mời (Word, NĐ 30/2020, chèn chữ ký khi đăng nhập quản trị); nút 🗓 ở Trang chủ và thanh trên (chấm đỏ = cuộc họp mới, nhấp nháy khi còn ≤ 2 giờ); gộp họp từ văn bản đến + trang LichHop; phân công lãnh đạo dự (Trưởng, Phó Trưởng trang LĐ), đơn vị chủ trì chuẩn bị, phối hợp, chỉ đạo nhanh; ảnh thông báo gửi Zalo/mail; .ics.
 - **Phần 9. Thông tin truyền thông:** tin từ Sheet "Bản tin nhanh" (tác vụ `lay-tin-tuc.yml` 2 giờ/lần, đã khóa); điểm tin, thống kê, lọc; đánh giá của tác vụ AI (trang DanhGia) hoặc phân loại sơ bộ theo từ khóa; nút Chỉ đạo → trang Chidao; ảnh Phiếu chỉ đạo, ảnh Điểm tin.
 - **Mật khẩu đơn vị** (21 phòng, Thuế cơ sở): mỗi đơn vị chỉ thấy kết quả, thứ hạng của mình, văn bản chủ trì/phối hợp, lịch họp, chỉ đạo liên quan, bản tin (không chỉ đạo). **Nhật ký đăng nhập, sử dụng** (⬇ Xuất → 📜).
 - **Đồng bộ Google Sheet** qua Apps Script (`cong-cu/apps-script-dong-bo.gs`): ghi LichHop, Chidao; chưa cài thì lưu trên máy. Phần 7 hiện chỉ đạo, cuộc họp giao đơn vị.
@@ -34,7 +34,9 @@
 - 21/11/2026: Làm rõ: app chỉ chép kết quả quét văn bản đến của kho `theo-doi-van-ban` (tác vụ GitHub, không AI, không tốn token); không quét lại Drive. Việc quét chỉ có 1 nơi là tác vụ "Quét văn bản đến".
 - 21/11/2026: Soạn lời dặn mới cho tác vụ "Viết bài báo về thuế" (ngoài app): lấy chủ đề từ trang DanhGia thay vì đọc lại từng bài. Tác vụ chạy trên máy tính của người dùng nên người dùng phải tự dán lời dặn trên máy đó.
 - 22/11/2026: Sửa tên đơn vị bị co "…" ở Phần 7 (do trùng tên kiểu thứ hạng của trang chủ đơn vị): tên đơn vị xuống dòng, điện thoại dọc đưa thứ hạng lên dòng trên; rà soát toàn app ở 3 khổ (máy tính, điện thoại ngang, dọc): Lịch họp, Văn bản đến (Điều hành nhanh, thanh theo đơn vị) không còn cắt tên; biểu đồ hiện đủ tên đơn vị.
+- 26/11/2026: (1) Trang Văn bản đến: khung chi tiết luôn vừa màn hình điện thoại (link, tên tệp dài tự xuống dòng). (2) Nhập số liệu, Xuất báo cáo, Cài đặt chỉ hiện khi đăng nhập quản trị (ℹ → 🔐 Đăng nhập quản trị, hoặc chạm logo 5 lần); lãnh đạo, đơn vị không thấy. (3) Lịch họp: soạn nhanh Thông báo / Giấy mời ra file Word đúng thể thức NĐ 30/2020, chia sẻ trên điện thoại; chèn chữ ký người ký (file chu_ky.mahoa.json khóa bằng mật khẩu quản trị). Hướng dẫn `huong-dan/HUONG_DAN_SOAN_THONG_BAO.md`.
 ## 3. Việc còn lại (người dùng làm trên GitHub)
+- [ ] Tải ảnh chữ ký người ký trong ⚙ (đăng nhập quản trị) → tạo `chu_ky.mahoa.json` → tải lên kho (xem `huong-dan/HUONG_DAN_SOAN_THONG_BAO.md`).
 - [ ] Làm theo `huong-dan/HUONG_DAN_MAT_KHAU_DON_VI.md`: dán Apps Script mới + `MA_NHAT_KY`; tạo mã gốc, mật khẩu đơn vị; secret `MA_GOC_DON_VI`; tải `khoa_don_vi.json`, `cau_hinh.json`; xuất kết quả đơn vị lên Drive.
 - [ ] Làm theo `huong-dan/HUONG_DAN_DONG_BO_SHEET.md`: secret `SHEET_TIN_TUC_ID`; cài Apps Script, đặt `MA_BI_MAT`; nhập vào ⚙ Cài đặt, tạo lại `cau_hinh.json`.
 - [x] 21/11/2026: đã nối Google Sheets (Composio), tạo trang **DanhGia**, tạo tác vụ đã lên lịch riêng **“Đánh giá tin thuế (Phần 9 – Thông tin truyền thông)”** chạy 7h42, 12h42, 16h42.

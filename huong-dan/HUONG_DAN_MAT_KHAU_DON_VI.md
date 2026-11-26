@@ -6,7 +6,7 @@
 | **Mật khẩu xem** (đang dùng) | Lãnh đạo | Toàn bộ: 6 phần số liệu, sơ đồ, xếp hạng mọi đơn vị, mọi văn bản đến, lịch họp (phân công), truyền thông (chỉ đạo), nhật ký |
 | **Mật khẩu đơn vị** (mới, 21 mật khẩu) | Từng phòng, Thuế cơ sở | Kết quả, thứ hạng **của đơn vị mình** theo từng nhiệm vụ; văn bản đến đơn vị **chủ trì hoặc phối hợp**; lịch họp, chỉ đạo liên quan đơn vị (chỉ xem); bản tin truyền thông (**không** có nút Chỉ đạo) |
 | (thêm) Trung tâm điều hành thu NSNN | Thuế cơ sở: chỉ các xã, phường mình phụ trách · Phòng CNTK, Phòng NVDTPC: toàn bộ 99 xã, phường · các phòng khác: không có | Mở từ nút 🗺 trên trang chủ của đơn vị |
-| **Mật khẩu quản trị** (đang dùng) | Người cập nhật | Nhập số liệu, Cài đặt, Xuất file |
+| **Mật khẩu quản trị** (đang dùng) | Người cập nhật | Nhập số liệu, Xuất báo cáo, Cài đặt, chèn chữ ký. Các nút này **ẩn** với lãnh đạo, đơn vị; hiện sau khi **ℹ → 🔐 Đăng nhập quản trị** (hoặc chạm logo BN 5 lần) |
 
 Dữ liệu của mỗi đơn vị được **khóa riêng** bằng khóa của đơn vị đó: đơn vị này không mở được dữ liệu của đơn vị khác, kể cả khi cố tình. Đơn vị không thấy số liệu của đơn vị khác, chỉ thấy thứ hạng của mình (ví dụ "#3/14").
 

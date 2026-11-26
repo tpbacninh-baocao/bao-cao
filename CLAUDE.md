@@ -25,7 +25,7 @@ huong-dan/                  hướng dẫn sử dụng, cài đặt; huong-dan/t
 cong-cu/                    ma-hoa-van-ban-den.mjs, lay-tin-tuc.mjs (đọc Sheet, khóa), apps-script-dong-bo.gs (dán vào Apps Script của Sheet),
                             don-vi.mjs (danh sách, khóa đơn vị – đọc chính nguon/van_ban_den_chung.js), goi-van-ban-don-vi.mjs
 index.html, van-ban-den.html   KẾT QUẢ ĐÓNG GÓI – không sửa tay
-cau_hinh.json, van-ban-den.mahoa.json, tin-tuc.mahoa.json, khoa_don_vi.json, don-vi/   tệp đã khóa – không sửa, không xóa
+cau_hinh.json, van-ban-den.mahoa.json, tin-tuc.mahoa.json, khoa_don_vi.json, don-vi/, chu_ky.mahoa.json   tệp đã khóa – không sửa, không xóa (chu_ky.mahoa.json: chữ ký người ký, khóa bằng mật khẩu quản trị)
 ```
 - Đóng gói để thử: `cd thu-vien && npm ci --ignore-scripts && cd .. && python dong_goi.py`.
 - Trên GitHub, `dong-goi.yml` tự đóng gói khi `nguon/`, `dong_goi.py` hoặc thư viện đổi.

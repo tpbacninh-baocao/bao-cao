@@ -191,6 +191,10 @@ h2.ngay:first-child{margin-top:0}
 .dr-nen{position:absolute;inset:0;background:rgba(2,11,31,.45);animation:mo .2s}
 .dr{position:absolute;right:0;top:0;bottom:0;width:min(620px,100%);background:var(--bg);box-shadow:-12px 0 40px rgba(0,0,0,.25);display:flex;flex-direction:column;animation:vao .25s cubic-bezier(.2,.8,.2,1)}
 @keyframes vao{from{transform:translateX(40px)}to{transform:none}}
+/* điện thoại: nội dung chi tiết luôn co trong bề ngang màn hình (link, tên tệp dài tự xuống dòng) */
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+.dr{max-width:100vw;overflow:hidden}.dr-dau,.dr-than{min-width:0;overflow-wrap:anywhere;word-break:break-word}.dr-than{overflow-x:hidden}
+.dr-than *{max-width:100%;box-sizing:border-box}.dr-than img{height:auto}.nv li span{min-width:0}.ts a span{min-width:0}
 @keyframes mo{from{opacity:0}}
 .dr-dau{padding:14px 16px 12px;background:linear-gradient(160deg,#04163a,#0b3270);color:#e6f3ff;display:flex;gap:10px;align-items:flex-start}
 .dr-dau .tt{flex:1;min-width:0}
@@ -922,7 +926,7 @@ function hoiMK(o,raw){
 // tự kiểm tra dữ liệu mới: 2 phút/lần khi trang đang hiện, và ngay khi quay lại trang
 setInterval(()=>{ if(DATA&&document.visibilityState==='visible') tai(true); },CHU_KY);
 document.addEventListener('visibilitychange',()=>{ if(document.visibilityState==='visible'&&DATA&&Date.now()-lanKT>60000) tai(true); });
-window.VBD_TEST={get DS(){return DS;}, get F(){return F;}, get UI(){return UI;}, ve, loc};
+window.VBD_TEST={get DS(){return DS;}, get F(){return F;}, get UI(){return UI;}, ve, loc, moCT};
 tai();
 })();
 </script>
